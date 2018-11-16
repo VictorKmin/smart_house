@@ -1,18 +1,18 @@
-const express = require('express');
-const router = express.Router();
-
-router.get('/', async (req,res)=> {
+module.exports = async (req, res) => {
     try {
         const postgres = req.app.get('postgres');
         const RoomStatistics = postgres.getModel('RoomStatistics');
         let roomid = req.query.id;
         if (!roomid) {
-            // ПРИДУМАТИ ЯК ГАРНО ВИВЕСТИ ВСЮ САТИСТИКУ
-            // ПО ЧЕРЗІ ДЛЯ КОЖНОЇ КІМНАТИ
-            res.json('Тут гарна статистика всіх кімнат ... буде')
+            // SELECT * FROM statistics ORDER BY roomid DESC, time DESC;
+            const statisticByRoom = await RoomStatistics.findAll({
+                order: [['roomid', 'DESC'], ['time', 'DESC']]
+            });
+            res.json(statisticByRoom)
         }
-
+        // SELECT * FROM statistics WHERE roomid = ${roomid} ORDER BY time DESC;
         const statisticByRoom = await RoomStatistics.findAll({
+            order:[['time', 'DESC']],
             where: {
                 roomid
             }
@@ -23,10 +23,8 @@ router.get('/', async (req,res)=> {
 
     } catch (e) {
         res.json({
-            success:false,
+            success: false,
             message: e
         })
     }
-});
-
-module.exports = router;
+};

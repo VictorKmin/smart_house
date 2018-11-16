@@ -1,12 +1,13 @@
 const Sequalize = require('sequelize');
 const fs = require('fs');
 const {resolve} = require('path');
+const {dbName, dbPass, dbUser} = require('../constants/dataBase');
 
 module.exports = (() => {
     let instance;
 
     function initConnection() {
-        let client = new Sequalize('smart_office', 'ukrinsoft', '2009', {
+        let client = new Sequalize(dbName, dbUser, dbPass, {
             host: 'localhost',
             dialect: 'postgres',
             operatorsAliases: false,

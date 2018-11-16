@@ -16,7 +16,7 @@ module.exports = (sequelize, DataTypes) => {
             type: DataTypes.STRING
         }
     }, {
-        tableName: 'statics',
+        tableName: 'statistic',
         timestamps: false
     });
     return RoomStatistics
