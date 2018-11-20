@@ -14,6 +14,9 @@ module.exports = (sequelize, DataTypes) => {
         },
         time: {
             type: DataTypes.STRING
+        },
+        status: {
+            type: DataTypes.BOOLEAN
         }
     }, {
         tableName: 'statistic',
