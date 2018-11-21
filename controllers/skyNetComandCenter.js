@@ -11,6 +11,7 @@ module.exports = async (body) => {
 
     const { ip:deviceip, room_id:roomid,room_temp, error_code} = body;
     const {room_heater: status, sensor_temp: temp} = body.interface;
+
     if (!deviceip || !roomid || error_code || !temp) throw new Error(chalk.bgRed(`BAD RESPONSE FROM MODULE`));
 
     console.log(chalk.bgGreen.black(`Response form ${deviceip} is good`));

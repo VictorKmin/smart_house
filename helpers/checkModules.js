@@ -3,7 +3,7 @@ const postgres = require('../dataBase').getInstance();
 postgres.setModels();
 
 process.on('message', () => {
-    setInterval(checkModules, 10000);
+    setInterval(checkModules, 50000);
 });
 
 async function checkModules() {

@@ -1,4 +1,3 @@
-const chalk = require('chalk');
 module.exports = async (req, res) => {
     try {
         const postgres = req.app.get('postgres');
@@ -28,7 +27,7 @@ module.exports = async (req, res) => {
     } catch (e) {
         res.json({
             success: false,
-            message: chalk.bgRed(e)
+            message: e.message
         })
     }
 };
