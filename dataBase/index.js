@@ -5,7 +5,6 @@ const {dbName, dbPass, dbUser} = require('../constants/dataBase');
 
 module.exports = (() => {
     let instance;
-
     function initConnection() {
         let client = new Sequalize(dbName, dbUser, dbPass, {
             host: 'localhost',

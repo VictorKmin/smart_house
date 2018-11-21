@@ -1,23 +1,21 @@
+const chalk = require('chalk');
+const postgres = new require('../dataBase').getInstance();
+postgres.setModels();
+
 module.exports = async (body) => {
-    const postgres = new require('../dataBase').getInstance();
-    postgres.setModels();
+
     const RoomInfo = postgres.getModel('RoomInfo');
     const RoomStatistics = postgres.getModel('RoomStatistics');
-    body = JSON.parse(body);
-    const deviceip = body.ip;
-    const roomid = body.room_id;
-    const room_temp = body.room_temp;
-    const { room_heater: status, sensor_temp: temp} = body.interface;
-    console.log(`${roomid}    ROOM ID`);
-    console.log(`${deviceip}   DEVICE IP`);
-    console.log(`${temp}   TEMPERATURE`);
-    console.log(`${status}   ROOM HEATER`);
+
+    if (!RoomInfo || !RoomStatistics) throw new Error(chalk.bgRed(`Cant connect to data base`));
+
+    const { ip:deviceip, room_id:roomid,room_temp, error_code} = body;
+    const {room_heater: status, sensor_temp: temp} = body.interface;
+    if (!deviceip || !roomid || error_code || !temp) throw new Error(chalk.bgRed(`BAD RESPONSE FROM MODULE`));
+
+    console.log(chalk.bgGreen.black(`Response form ${deviceip} is good`));
 //find room by ID
-    let isRoomInDB = await RoomInfo.findOne({
-        where: {
-            roomid
-        }
-    });
+    let isRoomInDB = await RoomInfo.findByPk(roomid);
 //If we have not room - create it
     if (!isRoomInDB) {
         await RoomInfo.create({
@@ -25,7 +23,7 @@ module.exports = async (body) => {
             deviceip,
             lastresponse: Date.now()
         });
-        console.log('NEW ROOM IS CREATED');
+        console.log(chalk.blue(`Room ${roomid} is created`));
     }
 // If room is present - update ip address and last response time
     await RoomInfo.update({
@@ -36,7 +34,7 @@ module.exports = async (body) => {
             roomid
         }
     });
-    console.log('ROOM IS UPDATED');
+    console.log(chalk.blue(`Room ${roomid} is updated`));
 
     await RoomStatistics.create({
         roomid,
@@ -44,5 +42,5 @@ module.exports = async (body) => {
         time: Date.now(),
         status: !!status
     });
-    console.log('DATA INSERT INTO STATISTICS');
+    console.log(chalk.blue(`Info by room ${roomid} insert into statistic`));
 };
