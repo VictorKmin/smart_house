@@ -9,8 +9,8 @@ module.exports = (sequelize, DataTypes) => {
         roomid: {
             type: DataTypes.INTEGER,
         },
-        temp: {
-            type: DataTypes.STRING,
+        room_temp: {
+            type: DataTypes.DOUBLE,
         },
         time: {
             type: DataTypes.STRING

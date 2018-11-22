@@ -13,10 +13,10 @@ async function sendReqToModules() {
     const allRooms = await RoomInfo.findAll({});
 
     for (const oneRoom of allRooms) {
-        const {deviceip} = oneRoom.dataValues;
+        const {deviceip, temp} = oneRoom.dataValues;
         console.log(chalk.cyan(`Send request to ${deviceip}`));
        request.get(
-            `http://${deviceip}/?room_temp=25`, (error, response, body) => {
+            `http://${deviceip}/?room_temp=${temp}`, (error, response, body) => {
                 if (!error && response.statusCode === 200) mainController(JSON.parse(body));
                 else console.log(chalk.bgRed(error.message));
             }

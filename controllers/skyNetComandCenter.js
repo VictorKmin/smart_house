@@ -9,7 +9,7 @@ module.exports = async (body) => {
 
     if (!RoomInfo || !RoomStatistics) throw new Error(chalk.bgRed(`Cant connect to data base`));
 
-    const { ip:deviceip, room_id:roomid,room_temp, error_code} = body;
+    const { ip:deviceip, room_id:roomid, room_temp, error_code} = body;
     const {room_heater: status, sensor_temp: temp} = body.interface;
 
     if (!deviceip || !roomid || error_code || !temp) throw new Error(chalk.bgRed(`BAD RESPONSE FROM MODULE`));
@@ -22,7 +22,8 @@ module.exports = async (body) => {
         await RoomInfo.create({
             roomid,
             deviceip,
-            lastresponse: Date.now()
+            lastresponse: Date.now(),
+            room_temp
         });
         console.log(chalk.blue(`Room ${roomid} is created`));
     }
@@ -39,7 +40,7 @@ module.exports = async (body) => {
 
     await RoomStatistics.create({
         roomid,
-        temp,
+        room_temp: temp,
         time: Date.now(),
         status: !!status
     });
