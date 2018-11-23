@@ -3,7 +3,6 @@ const sendReq = require('../../helpers/sendRequest');
 
 module.exports = async (req, res) => {
     try {
-        // { id: '2', temp: '25' }
         const postgres = req.app.get('postgres');
         const RoomInfo = postgres.getModel('RoomInfo');
         const {id, temp} = req.query;

@@ -34,8 +34,8 @@ app.use('/api', apiRouter);
  */
 (() => {
     console.log('Start modules');
-    const isModuleAlive = fork(resolvePath('./helpers/checkModules'));
-    const sendTempRequest = fork(resolvePath('./helpers/sendTempRequest'));
+    const isModuleAlive = fork(resolvePath('./microservices/checkModules'));
+    const sendTempRequest = fork(resolvePath('./microservices/sendTempRequest'));
     isModuleAlive.send('startCheck');
     sendTempRequest.send('sendReq');
 })();

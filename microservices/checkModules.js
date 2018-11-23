@@ -1,5 +1,5 @@
 const chalk = require('chalk');
-const postgres = require('../dataBase').getInstance();
+const postgres = require('../dataBase/index').getInstance();
 postgres.setModels();
 
 process.on('message', () => {
