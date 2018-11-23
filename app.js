@@ -6,6 +6,7 @@ const cron = require('node-cron');
 const mainController = require('./router/main');
 const clearDatabase = require('./helpers/clearDatabase');
 const getStatistic = require('./router/statistics');
+const apiRouter = require('./router/api/setTemp');
 const postgres = new require('./dataBase').getInstance();
 postgres.setModels();
 const app = express();
@@ -24,6 +25,7 @@ app.use((req, res, next) => {
 
 app.use('/', mainController);
 app.use('/stat', getStatistic);
+app.use('/api', apiRouter);
 
 /**
  * Child-process to working with Modules

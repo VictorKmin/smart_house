@@ -10,6 +10,9 @@ module.exports = (sequelize, DataTypes) => {
         },
         lastresponse: {
             type: DataTypes.STRING
+        },
+        temp: {
+            type: DataTypes.DOUBLE
         }
     }, {
         tableName: 'roomsinfo',
