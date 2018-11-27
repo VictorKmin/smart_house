@@ -35,7 +35,6 @@ module.exports = async (req, res) => {
             //     res.json(statisticByRoom)
         }
 
-
         // SELECT * FROM statistics WHERE roomid = ${roomid} ORDER BY time DESC LIMIT 1;
         const statisticByRoom = await RoomStatistics.findOne({
             order: [['time', 'DESC']],

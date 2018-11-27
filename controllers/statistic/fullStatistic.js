@@ -24,7 +24,7 @@ module.exports = async (req, res) => {
     } catch (e) {
         res.json({
             success: false,
-            message: e
+            message: e.message
         })
     }
 };
