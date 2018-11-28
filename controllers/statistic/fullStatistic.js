@@ -12,7 +12,7 @@ module.exports = async (req, res) => {
         }
         // SELECT * FROM statistics WHERE roomid = ${roomid} ORDER BY time DESC;
         const statisticByRoom = await RoomStatistics.findAll({
-            order:[['time', 'DESC']],
+            order:[['time', 'ASC']],
             where: {
                 roomid
             }

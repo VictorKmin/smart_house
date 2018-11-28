@@ -15,7 +15,7 @@
     "express": "^4.16.4",
     "node-cron": "^2.0.3",
     "pg": "^7.6.1",
-    "request-promise": "^4.2.2",
-    "sequelize": "^4.41.2"
+    "sequelize": "^4.41.2",
+    "request": "latest"
   }
 }

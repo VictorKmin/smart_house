@@ -47,7 +47,6 @@ module.exports = async (req, res) => {
         res.json(statisticByRoom);
 
     } catch (e) {
-        console.log(e)
         res.json({
             success: false,
             message: e.message

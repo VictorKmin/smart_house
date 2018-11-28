@@ -1,4 +1,3 @@
-const chalk = require('chalk');
 const sendReq = require('../../helpers/sendRequest');
 
 module.exports = async (req, res) => {

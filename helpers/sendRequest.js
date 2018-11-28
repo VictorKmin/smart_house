@@ -1,4 +1,4 @@
-const request = require('request-promise');
+const request = require('request');
 const chalk = require('chalk');
 const mainController = require('../controllers/skyNetComandCenter');
 
