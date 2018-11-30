@@ -3,7 +3,7 @@ const router = express.Router();
 const chalk = require('chalk');
 const mainController = require('../controllers/skyNetComandCenter');
 
-router.get('/', async (req, res) => {
+router.get('/', (req, res) => {
     try {
         mainController(req.body);
 
@@ -21,7 +21,7 @@ router.get('/', async (req, res) => {
     }
 });
 
-router.post('/', function (req, res) {
+router.post('/', (req, res) => {
     try {
         console.log(chalk.bgGreen('POST'));
         mainController(req.body);

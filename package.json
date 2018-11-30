@@ -13,9 +13,10 @@
     "body-parser": "^1.18.3",
     "chalk": "^2.4.1",
     "express": "^4.16.4",
+    "moment": "^2.22.2",
     "node-cron": "^2.0.3",
     "pg": "^7.6.1",
-    "sequelize": "^4.41.2",
-    "request": "latest"
+    "request": "latest",
+    "sequelize": "^4.41.2"
   }
 }

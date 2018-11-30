@@ -3,16 +3,10 @@ module.exports = async (req, res) => {
         const postgres = req.app.get('postgres');
         const RoomStatistics = postgres.getModel('RoomStatistics');
         let roomid = req.query.id;
-        if (!roomid) {
-            // SELECT * FROM statistics ORDER BY roomid DESC, time DESC;
-            const statisticByRoom = await RoomStatistics.findAll({
-                order: [['roomid', 'DESC'], ['time', 'DESC']]
-            });
-            res.json(statisticByRoom)
-        }
-        // SELECT * FROM statistics WHERE roomid = ${roomid} ORDER BY time DESC;
+        if (!roomid) throw new Error('Please set id in query');
+        // SELECT * FROM statistics WHERE roomid = ${roomid} ORDER BY id ASC;
         const statisticByRoom = await RoomStatistics.findAll({
-            order:[['time', 'ASC']],
+            order: [['id', 'ASC']],
             where: {
                 roomid
             }

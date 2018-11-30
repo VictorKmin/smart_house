@@ -2,9 +2,9 @@ const express = require('express');
 const {fork} = require('child_process');
 const bodyParser = require('body-parser');
 const {resolve: resolvePath} = require('path');
-const cron = require('node-cron');
 const mainController = require('./router/main');
-const clearDatabase = require('./helpers/clearDatabase');
+// const cron = require('node-cron');
+// const clearDatabase = require('./helpers/clearDatabase');
 const getStatistic = require('./router/statistics');
 const apiRouter = require('./router/api/setTemp');
 const postgres = new require('./dataBase').getInstance();
@@ -45,9 +45,9 @@ app.use('/api', apiRouter);
  * Method running once time
  * "Old records" is records who older than 1 month
  */
-cron.schedule('0 0 1 * *', () => {
-    clearDatabase(postgres)
-});
+// cron.schedule('0 0 1 * *', () => {
+//     clearDatabase(postgres)
+// });
 
 app.listen(5000, (ok, err) => {
     if (err) console.log(err);

@@ -9,11 +9,12 @@ module.exports = async (body) => {
 
     if (!RoomInfo || !RoomStatistics) throw new Error(chalk.bgRed(`Cant connect to data base`));
 
-    const { ip:deviceip, room_id:roomid, room_temp, error_code} = body;
-    const {room_heater: status, sensor_temp: temp} = body.interface;
+    const {ip: deviceip, room_id: roomid, room_temp, error_code} = body;
+    let {room_heater: status, sensor_temp: temp} = body.interface;
 
     if (!deviceip || !roomid || error_code || !temp) throw new Error(chalk.bgRed(`BAD RESPONSE FROM MODULE`));
 
+    // temp =  parseFloat(temp).toFixed(2);
     console.log(chalk.bgGreen.black(`Response form ${deviceip} is good`));
 //find room by ID
     let isRoomInDB = await RoomInfo.findByPk(roomid);
@@ -38,11 +39,17 @@ module.exports = async (body) => {
     });
     console.log(chalk.blue(`Room ${roomid} is updated`));
 
+
+    /**
+     * Insert new value into statistic
+     */
+    let date = new Date().toLocaleDateString();
+    let time = new Date().toLocaleTimeString();
     await RoomStatistics.create({
         roomid,
-        room_temp: temp,
-        time: Date.now(),
-        status: !!status
+        room_temp: parseFloat(temp).toFixed(1),
+        status: !!status,
+        fulldate: `${date} ${time}`
     });
     console.log(chalk.blue(`Info by room ${roomid} insert into statistic`));
 };

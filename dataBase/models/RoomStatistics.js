@@ -1,4 +1,3 @@
-
 module.exports = (sequelize, DataTypes) => {
     const RoomStatistics = sequelize.define('RoomStatistics', {
         id: {
@@ -12,11 +11,11 @@ module.exports = (sequelize, DataTypes) => {
         room_temp: {
             type: DataTypes.DOUBLE,
         },
-        time: {
-            type: DataTypes.STRING
-        },
         status: {
             type: DataTypes.BOOLEAN
+        },
+        fulldate: {
+            type: DataTypes.STRING,
         }
     }, {
         tableName: 'statistic',
