@@ -1,4 +1,5 @@
 const sendReq = require('../../helpers/sendRequest');
+const chalk = require('chalk');
 
 module.exports = async (req, res) => {
     try {
@@ -11,11 +12,11 @@ module.exports = async (req, res) => {
             temp
         }, {
             where: {
-                roomid:id
+                roomid: id
             }
         });
 
-       const {deviceip} = await RoomInfo.findByPk(id);
+        const {deviceip} = await RoomInfo.findByPk(id);
 
         sendReq(deviceip, temp);
 
@@ -25,7 +26,7 @@ module.exports = async (req, res) => {
             message: 'OK'
         })
     } catch (e) {
-        throw new Error(e.message)
+        console.log(chalk.bgRed(e.message))
     }
 
 };

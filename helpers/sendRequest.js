@@ -2,6 +2,7 @@ const request = require('request');
 const chalk = require('chalk');
 const mainController = require('../controllers/skyNetComandCenter');
 
+//JUST THROW ERROR
 module.exports = (deviceip, temp) => {
     request.get(
         `http://${deviceip}/?room_temp=${temp}`, (error, response, body) => {

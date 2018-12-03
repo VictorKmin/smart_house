@@ -2,7 +2,10 @@ const chalk = require('chalk');
 const postgres = new require('../dataBase').getInstance();
 postgres.setModels();
 
+//JUST THROW ERROR
 module.exports = async (body) => {
+
+    console.log('I AM IN MAIN CONTROLLER');
 
     const RoomInfo = postgres.getModel('RoomInfo');
     const RoomStatistics = postgres.getModel('RoomStatistics');
@@ -14,7 +17,6 @@ module.exports = async (body) => {
 
     if (!deviceip || !roomid || error_code || !temp) throw new Error(chalk.bgRed(`BAD RESPONSE FROM MODULE`));
 
-    // temp =  parseFloat(temp).toFixed(2);
     console.log(chalk.bgGreen.black(`Response form ${deviceip} is good`));
 //find room by ID
     let isRoomInDB = await RoomInfo.findByPk(roomid);

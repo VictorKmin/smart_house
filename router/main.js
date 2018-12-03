@@ -5,8 +5,11 @@ const mainController = require('../controllers/skyNetComandCenter');
 
 router.get('/', (req, res) => {
     try {
-        mainController(req.body);
+        console.log('______________');
+        console.log(req.body);
+        console.log('______________');
 
+        mainController(req.body);
         res.json({
             success: true,
             statusCode: 200,
@@ -14,16 +17,22 @@ router.get('/', (req, res) => {
         })
     }
     catch (e) {
+        console.log(chalk.bgRed(e.message));
         res.json({
             success: false,
-            message: chalk.bgRed(e.message)
+            message: e.message
         })
     }
 });
 
 router.post('/', (req, res) => {
     try {
-        console.log(chalk.bgGreen('POST'));
+        console.log(chalk.bgGreen('MODULE PING ME FIRST'));
+
+        console.log('______________');
+        console.log(req.body);
+        console.log('______________');
+
         mainController(req.body);
         res.json({
             success: true,
@@ -31,10 +40,12 @@ router.post('/', (req, res) => {
             message: 'OK'
         })
     } catch (e) {
-        console.log(chalk.red(e.message));
-        res.json(e.message)
+        console.log(chalk.bgRed(e.message));
+        res.json({
+            success: false,
+            message: e.message
+        })
     }
-
 });
 
 module.exports = router;
