@@ -25,9 +25,16 @@ module.exports = async (req, res) => {
             let respObj = {id, room_temp, status, temp, deviceip};
             resp.push(respObj)
         }
-        res.json(resp)
+        res.json({
+            success: true,
+            message: resp
+        })
 
     } catch (e) {
-        console.log(chalk.bgRed(e.message))
+        console.log(chalk.bgRed(e.message));
+        res.json({
+            success:false,
+            message: e.message,
+        })
     }
 };

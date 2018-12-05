@@ -11,7 +11,9 @@ process.on('message', () => {
 async function sendReqToModules() {
     try {
         const RoomInfo = postgres.getModel('RoomInfo');
+        if (!RoomInfo) throw new Error(`Cant connect to data base. Code: 1`);
         const allRooms = await RoomInfo.findAll({});
+        if (allRooms.length === 0) throw new Error(`No rooms in DataBase. Code: 5`);
 
         for (const oneRoom of allRooms) {
             const {deviceip, temp} = oneRoom.dataValues;
@@ -19,7 +21,6 @@ async function sendReqToModules() {
             sendReq(deviceip, temp)
         }
     } catch (e) {
-        console.log(e.message)
+        console.log(e.message);
     }
-
 }

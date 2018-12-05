@@ -10,16 +10,16 @@ async function checkModules() {
     try {
         console.log(chalk.magenta('Start to check modules....'));
         const RoomInfo = postgres.getModel('RoomInfo');
-        if (!RoomInfo) throw new Error(chalk.bgRed(`Cant connect to data base`));
+        if (!RoomInfo) throw new Error(`Cant connect to data base. Code: 1`);
 
         const allRooms = await RoomInfo.findAll({});
         for (const {roomid, lastresponse} of allRooms) {
             let currentTime = Date.now();
             console.log(chalk.cyan(`Last response in room ${roomid} was ${currentTime - lastresponse}ms ago`));
-            if (currentTime - lastresponse > 300000) throw new Error(chalk.bgRed(`Module in room ${roomid} is dead !`));
+            if (currentTime - lastresponse > 300000) throw new Error(`Module in room ${roomid} is dead ! Code: 2`);
         }
     } catch (e) {
-        console.log(e.message)
+        console.log(chalk.bgRed(e.message))
     }
 
 }

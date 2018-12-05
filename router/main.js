@@ -5,9 +5,7 @@ const mainController = require('../controllers/skyNetComandCenter');
 
 router.get('/', (req, res) => {
     try {
-        console.log('______________');
         console.log(req.body);
-        console.log('______________');
 
         mainController(req.body);
         res.json({
@@ -27,11 +25,8 @@ router.get('/', (req, res) => {
 
 router.post('/', (req, res) => {
     try {
-        console.log(chalk.bgGreen('MODULE PING ME FIRST'));
-
-        console.log('______________');
+        console.log(chalk.green('Request from module'));
         console.log(req.body);
-        console.log('______________');
 
         mainController(req.body);
         res.json({

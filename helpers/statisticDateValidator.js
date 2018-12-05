@@ -1,21 +1,29 @@
 module.exports = (from, to) => {
-    let [fromDate, fromHour] = from.split(' ');
-    let [toDate, toHour] = to.split(' ');
-    let [fromYear, fromMonth, fromDay] = fromDate.split('-');
-    let [toYear, toMonth, toDay] = toDate.split('-');
 
-    (fromYear === 'undefined') ? fromYear = 0 : fromYear;
-    (fromMonth === "undefined") ? fromMonth = 0 : fromMonth;
-    (fromDay === "undefined") ? fromDay = 0 : fromDay;
-    (fromHour === "undefined") ? fromHour = 0 : fromHour;
+    if (from.includes('undefined') || from.includes('1970') || from.includes('Invalid')) {
+        from = new Date(Date.now() - 259200000).toLocaleDateString();
+        let [year, month, day] = from.split('-');
+        (+month < 10) ? month = '0' + month: month;
+        (+day < 10) ? day = '0' + day : day;
+        from = `${year}-${month}-${day}`;
+    }
+    else {
+        from = from + " 00";
+    }
 
-    (toYear === "undefined") ? toYear = 9999 : toYear;
-    (toMonth === "undefined") ? toMonth = 99 : toMonth;
-    (toDay === "undefined") ? toDay = 99 : toDay;
-    (toHour === "undefined") ? toHour = 99 : toHour;
+    if (to.includes('undefined') || to.includes('1970') || to.includes('Invalid')) {
+        to = new Date(Date.now()).toLocaleDateString();
+        let [year, month, day] = to.split('-');
+        (+month < 10) ? month = '0' + month: month;
+        (+day < 10) ? day = '0' + day : day;
+        to = `${year}-${month}-${day} 23:59`;
+    }
+    else  {
+        to = to + ' 23:59';
+    }
 
-    fromDate = `${fromYear}-${fromMonth}-${fromDay} ${fromHour}`;
-    toDate = `${toYear}-${toMonth}-${toDay} ${toHour}`;
-
-    return {fromDate, toDate}
+    return {
+        startingDate: from,
+        finishDate: to
+    }
 };

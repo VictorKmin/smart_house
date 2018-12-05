@@ -8,6 +8,7 @@ const chalk = require('chalk');
 module.exports = async (postgres) => {
     try {
         const RoomStatistics = postgres.getModel('RoomStatistics');
+        if (!RoomStatistics) throw new Error(`Cant connect to data base. Code: 1`);
                                             //31 days
         let olderThanOneMonth = Date.now() - 2678400000;
         // DELETE * FORM statistics WHERE time <= olderThanOneMonth;
@@ -21,6 +22,6 @@ module.exports = async (postgres) => {
         console.log(chalk.bgMagenta('-----ALL OLD RECORDS IS DELETED-----'));
     } catch (e) {
         console.log(chalk.bgRed(e.message))
-    }
 
+    }
 };

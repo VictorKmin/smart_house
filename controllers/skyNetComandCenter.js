@@ -5,20 +5,24 @@ postgres.setModels();
 //JUST THROW ERROR
 module.exports = async (body) => {
 
-    console.log('I AM IN MAIN CONTROLLER');
-
     const RoomInfo = postgres.getModel('RoomInfo');
     const RoomStatistics = postgres.getModel('RoomStatistics');
 
-    if (!RoomInfo || !RoomStatistics) throw new Error(chalk.bgRed(`Cant connect to data base`));
+    if (!RoomInfo || !RoomStatistics) throw new Error(chalk.bgRed(`Cant connect to data base. Code: 1`));
 
     const {ip: deviceip, room_id: roomid, room_temp, error_code} = body;
-    let {room_heater: status, sensor_temp: temp} = body.interface;
+    const {room_heater: status, sensor_temp: temp} = body.interface;
 
-    if (!deviceip || !roomid || error_code || !temp) throw new Error(chalk.bgRed(`BAD RESPONSE FROM MODULE`));
+    if (!deviceip || !roomid || error_code || !temp) throw new Error(chalk.bgRed(`BAD RESPONSE FROM MODULE. Code: 4`));
 
     console.log(chalk.bgGreen.black(`Response form ${deviceip} is good`));
-//find room by ID
+
+    /**
+     * Check is room present in DataBase.
+     * If we have not room - we insert it into DataBase
+     * If room is already present, we just update parameters of room
+     * @type {Model}
+     */
     let isRoomInDB = await RoomInfo.findByPk(roomid);
 //If we have not room - create it
     if (!isRoomInDB) {
@@ -43,15 +47,41 @@ module.exports = async (body) => {
 
 
     /**
-     * Insert new value into statistic
+     * Get current date and time. Adding 0 if month and day is less than 10
+     * Check is last record in DataBase have
      */
     let date = new Date().toLocaleDateString();
     let time = new Date().toLocaleTimeString();
-    await RoomStatistics.create({
-        roomid,
-        room_temp: parseFloat(temp).toFixed(1),
-        status: !!status,
-        fulldate: `${date} ${time}`
-    });
-    console.log(chalk.blue(`Info by room ${roomid} insert into statistic`));
+    let [year, month, day] = date.split('-');
+    (+month < 10) ? month = '0' + month : month;
+    (+day < 10) ? day = '0' + day : day;
+    date = `${year}-${month}-${day}`;
+    // // Find newest room in DataBase
+    // let room = await RoomStatistics.findOne({
+    //     order: [['id', 'DESC']],
+    //     where: {roomid}
+    // });
+    //
+    // const {room_temp: lastTemp, id: lastId} = room.dataValues;
+    // // If temperatures of current value and last value is equals - just update time
+    // if (lastTemp === temp.toFixed(1)) {
+    //     await RoomStatistics.update({
+    //         fulldate: `${date} ${time}`
+    //     }, {
+    //         where: {
+    //             id: lastId
+    //         }
+    //     });
+    //     console.log(chalk.blue(`Info by room ${roomid} are updated`));
+    // }
+    // //  If they are not equals - create new record
+    // else {
+        await RoomStatistics.create({
+            roomid,
+            room_temp: temp.toFixed(1),
+            status: !!status,
+            fulldate: `${date} ${time}`
+        });
+        console.log(chalk.blue(`Info by room ${roomid} insert into statistic`));
+    // }
 };
