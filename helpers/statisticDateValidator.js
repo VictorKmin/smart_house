@@ -1,6 +1,6 @@
 module.exports = (from, to) => {
 
-    if (from.includes('undefined') || from.includes('1970') || from.includes('Invalid')) {
+    if (!from || from.includes('undefined') || from.includes('1970') || from.includes('Invalid')) {
         from = new Date(Date.now() - 259200000).toLocaleDateString();
         let [year, month, day] = from.split('-');
         (+month < 10) ? month = '0' + month: month;
@@ -11,7 +11,7 @@ module.exports = (from, to) => {
         from = from + " 00";
     }
 
-    if (to.includes('undefined') || to.includes('1970') || to.includes('Invalid')) {
+    if (!to || to.includes('undefined') || to.includes('1970') || to.includes('Invalid')) {
         to = new Date(Date.now()).toLocaleDateString();
         let [year, month, day] = to.split('-');
         (+month < 10) ? month = '0' + month: month;
