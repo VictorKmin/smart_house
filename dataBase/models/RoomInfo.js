@@ -13,6 +13,9 @@ module.exports = (sequelize, DataTypes) => {
         },
         temp: {
             type: DataTypes.DOUBLE
+        },
+        isalive: {
+            type: DataTypes.BOOLEAN
         }
     }, {
         tableName: 'roomsinfo',

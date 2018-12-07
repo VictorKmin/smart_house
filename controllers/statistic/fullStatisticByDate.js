@@ -2,7 +2,13 @@ const dateValidator = require('../../helpers/statisticDateValidator');
 const Sequelize = require("sequelize");
 const Op = Sequelize.Op;
 const chalk = require('chalk');
-
+/**
+ * This method find in DataBase within dates from dateValidator method
+ * Then returns array of values to Angular
+ * @param req
+ * @param res
+ * @returns {Promise<void>}
+ */
 module.exports = async (req, res) => {
     try {
         const postgres = req.app.get('postgres');
@@ -11,10 +17,6 @@ module.exports = async (req, res) => {
 
         const {startingDate, finishDate} = dateValidator(from, to);
 
-        console.log('_____________');
-        console.log(startingDate);
-        console.log(finishDate);
-        console.log('_____________');
         /**
          * Show stats within certain dates.
          * Date: "YYYY-MM-DD"

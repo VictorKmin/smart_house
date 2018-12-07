@@ -1,3 +1,11 @@
+/**
+ * Method to check date from Angular datepicker.
+ * If we have not date or date contains 1970, undefined, Invalid words
+ * We set the starting date 3 days ago and finished date equals current date
+ * @param from - start date search
+ * @param to - finish date search
+ * @returns {{startingDate: string, finishDate: string}} - new value of dates
+ */
 module.exports = (from, to) => {
 
     if (!from || from.includes('undefined') || from.includes('1970') || from.includes('Invalid')) {

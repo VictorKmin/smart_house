@@ -2,7 +2,6 @@ const chalk = require('chalk');
 const postgres = new require('../dataBase').getInstance();
 postgres.setModels();
 
-//JUST THROW ERROR
 module.exports = async (body) => {
 
     const RoomInfo = postgres.getModel('RoomInfo');
@@ -30,13 +29,15 @@ module.exports = async (body) => {
             roomid,
             deviceip,
             lastresponse: Date.now(),
-            room_temp
+            room_temp,
+            isalive: true
         });
         console.log(chalk.blue(`Room ${roomid} is created`));
     }
 // If room is present - update ip address and last response time
     await RoomInfo.update({
         deviceip,
+        isalive: true,
         lastresponse: Date.now()
     }, {
         where: {
@@ -45,10 +46,11 @@ module.exports = async (body) => {
     });
     console.log(chalk.blue(`Room ${roomid} is updated`));
 
-
     /**
+     * This method minimize records in DataBase
      * Get current date and time. Adding 0 if month and day is less than 10
-     * Check is last record in DataBase have
+     * Check is previous and before the previous one records in DataBase have temperature like current value from temperature module
+     * If its equals we delete previous record.
      */
     let date = new Date().toLocaleDateString();
     let time = new Date().toLocaleTimeString();
@@ -56,32 +58,29 @@ module.exports = async (body) => {
     (+month < 10) ? month = '0' + month : month;
     (+day < 10) ? day = '0' + day : day;
     date = `${year}-${month}-${day}`;
-    // // Find newest room in DataBase
-    // let room = await RoomStatistics.findOne({
-    //     order: [['id', 'DESC']],
-    //     where: {roomid}
-    // });
-    //
-    // const {room_temp: lastTemp, id: lastId} = room.dataValues;
-    // // If temperatures of current value and last value is equals - just update time
-    // if (lastTemp === temp.toFixed(1)) {
-    //     await RoomStatistics.update({
-    //         fulldate: `${date} ${time}`
-    //     }, {
-    //         where: {
-    //             id: lastId
-    //         }
-    //     });
-    //     console.log(chalk.blue(`Info by room ${roomid} are updated`));
-    // }
-    // //  If they are not equals - create new record
-    // else {
-        await RoomStatistics.create({
-            roomid,
-            room_temp: temp.toFixed(1),
-            status: !!status,
-            fulldate: `${date} ${time}`
+    // Find newest room in DataBase
+    let [newRoom, oldRoom] = await RoomStatistics.findAll({
+        order: [['id', 'DESC']],
+        limit: 2,
+        where: {roomid}
+    });
+    const {room_temp: previpuosTemp} = oldRoom.dataValues;
+    const {id: lastId, room_temp: lastTemp} = newRoom.dataValues;
+    // If temperatures of current value and last value is equals - just update time
+    if (previpuosTemp === temp.toFixed(1) && lastTemp === temp.toFixed(1)) {
+        await RoomStatistics.destroy({
+            where: {
+                id: lastId
+            }
         });
-        console.log(chalk.blue(`Info by room ${roomid} insert into statistic`));
-    // }
+        console.log(chalk.blue(`DELETE PREVIOUS ROOM`));
+    }
+    // If they are not equals - create new record
+    await RoomStatistics.create({
+        roomid,
+        room_temp: temp.toFixed(1),
+        status: !!status,
+        fulldate: `${date} ${time}`
+    });
+    console.log(chalk.blue(`Info by room ${roomid} insert into statistic`));
 };

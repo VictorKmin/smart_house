@@ -6,6 +6,11 @@ process.on('message', () => {
     setInterval(checkModules, 100000);
 });
 
+/**
+ * Child process to checking time response from module
+ * If module not response more than 5 minutes we change status in DataBase to dead
+ * @returns {Promise<void>}
+ */
 async function checkModules() {
     try {
         console.log(chalk.magenta('Start to check modules....'));
@@ -16,7 +21,15 @@ async function checkModules() {
         for (const {roomid, lastresponse} of allRooms) {
             let currentTime = Date.now();
             console.log(chalk.cyan(`Last response in room ${roomid} was ${currentTime - lastresponse}ms ago`));
-            if (currentTime - lastresponse > 300000) throw new Error(`Module in room ${roomid} is dead ! Code: 2`);
+            if (currentTime - lastresponse > 300000) {
+              await RoomInfo.update({
+                    isAlive: false,
+                    where: {
+                        roomid
+                    }
+                });
+                throw new Error(`Module in room ${roomid} is dead ! Code: 2`);
+            }
         }
     } catch (e) {
         console.log(chalk.bgRed(e.message))
