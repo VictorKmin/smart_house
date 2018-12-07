@@ -22,13 +22,14 @@ async function checkModules() {
             let currentTime = Date.now();
             console.log(chalk.cyan(`Last response in room ${roomid} was ${currentTime - lastresponse}ms ago`));
             if (currentTime - lastresponse > 300000) {
-              await RoomInfo.update({
-                    isAlive: false,
+              RoomInfo.update({
+                  isalive: false,
+              },{
                     where: {
                         roomid
                     }
                 });
-                throw new Error(`Module in room ${roomid} is dead ! Code: 2`);
+               console.log(chalk.bgRed(`Module in room ${roomid} is dead ! Code: 2`));
             }
         }
     } catch (e) {

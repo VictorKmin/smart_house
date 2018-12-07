@@ -14,6 +14,13 @@ module.exports = async (body) => {
 
     if (!deviceip || !roomid || error_code || !temp) throw new Error(chalk.bgRed(`BAD RESPONSE FROM MODULE. Code: 4`));
 
+    let date = new Date().toLocaleDateString();
+    let time = new Date().toLocaleTimeString();
+    let [year, month, day] = date.split('-');
+    (+month < 10) ? month = '0' + month : month;
+    (+day < 10) ? day = '0' + day : day;
+    date = `${year}-${month}-${day}`;
+
     console.log(chalk.bgGreen.black(`Response form ${deviceip} is good`));
 
     /**
@@ -31,6 +38,13 @@ module.exports = async (body) => {
             lastresponse: Date.now(),
             room_temp,
             isalive: true
+        });
+
+        await RoomStatistics.create({
+            roomid,
+            room_temp: temp.toFixed(1),
+            status: !!status,
+            fulldate: `${date} ${time}`
         });
         console.log(chalk.blue(`Room ${roomid} is created`));
     }
@@ -52,18 +66,21 @@ module.exports = async (body) => {
      * Check is previous and before the previous one records in DataBase have temperature like current value from temperature module
      * If its equals we delete previous record.
      */
-    let date = new Date().toLocaleDateString();
-    let time = new Date().toLocaleTimeString();
-    let [year, month, day] = date.split('-');
-    (+month < 10) ? month = '0' + month : month;
-    (+day < 10) ? day = '0' + day : day;
-    date = `${year}-${month}-${day}`;
-    // Find newest room in DataBase
+        // Find newest room in DataBase
     let [newRoom, oldRoom] = await RoomStatistics.findAll({
-        order: [['id', 'DESC']],
-        limit: 2,
-        where: {roomid}
-    });
+            order: [['id', 'DESC']],
+            limit: 2,
+            where: {roomid}
+        });
+
+    if (!newRoom || !oldRoom) {
+        await RoomStatistics.create({
+            roomid,
+            room_temp: temp.toFixed(1),
+            status: !!status,
+            fulldate: `${date} ${time}`
+        });
+    }
     const {room_temp: previpuosTemp} = oldRoom.dataValues;
     const {id: lastId, room_temp: lastTemp} = newRoom.dataValues;
     // If temperatures of current value and last value is equals - just update time

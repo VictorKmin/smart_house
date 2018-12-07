@@ -24,8 +24,7 @@ module.exports = async (req, res) => {
                 },
             });
 
-            if (!statisticByRoom.dataValues) throw new Error(`Statistic by room ${roomid} is empty. Code 3`);
-
+            // if (!statisticByRoom) throw new Error(`Statistic by room ${roomid} is empty. Code 3`);
             let {roomid: id, status, room_temp} = statisticByRoom.dataValues;
             let respObj = {id, room_temp, status, temp, deviceip, isalive};
             resp.push(respObj)
