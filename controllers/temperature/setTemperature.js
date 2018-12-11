@@ -5,7 +5,9 @@ module.exports = async (req, res) => {
     try {
         const postgres = req.app.get('postgres');
         const RoomInfo = postgres.getModel('RoomInfo');
+        if (!RoomInfo) throw new Error('Cant connect to DataBase. Code: 1');
         const {id, temp} = req.query;
+        if (!id || !temp) throw new Error('Something wrong with request. Code: 1');
 
         //Update room
         await RoomInfo.update({
@@ -17,6 +19,7 @@ module.exports = async (req, res) => {
         });
 
         const {deviceip} = await RoomInfo.findByPk(id);
+        if (!deviceip) throw new Error('We have not this room in database. Code 5');
 
         sendReq(deviceip, temp);
 
@@ -28,5 +31,4 @@ module.exports = async (req, res) => {
     } catch (e) {
         console.log(chalk.bgRed(e.message))
     }
-
 };
