@@ -1,5 +1,5 @@
 module.exports = (sequelize, DataTypes) => {
-    const RoomStatistics = sequelize.define('RoomStatistics', {
+    const HumidityInfo = sequelize.define('HumidityInfo', {
         id: {
             type: DataTypes.INTEGER,
             primaryKey: true,
@@ -8,18 +8,15 @@ module.exports = (sequelize, DataTypes) => {
         roomid: {
             type: DataTypes.INTEGER,
         },
-        room_temp: {
+        humidity: {
             type: DataTypes.DOUBLE,
-        },
-        status: {
-            type: DataTypes.BOOLEAN
         },
         fulldate: {
             type: DataTypes.STRING,
         }
     }, {
-        tableName: 'temp_info',
+        tableName: 'humidity_info',
         timestamps: false
     });
-    return RoomStatistics
+    return HumidityInfo
 };

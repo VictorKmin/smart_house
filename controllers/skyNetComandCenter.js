@@ -6,13 +6,14 @@ module.exports = async (body) => {
 
     const RoomInfo = postgres.getModel('RoomInfo');
     const RoomStatistics = postgres.getModel('RoomStatistics');
+    const HumidityInfo = postgres.getModel('HumidityInfo');
 
-    if (!RoomInfo || !RoomStatistics) throw new Error(chalk.bgRed(`Cant connect to data base. Code: 1`));
+    if (!RoomInfo || !RoomStatistics || !HumidityInfo) throw new Error(chalk.bgRed(`Cant connect to data base. Code: 1`));
 
-    const {ip: deviceip, room_id: roomid, room_temp, error_code} = body;
-    const {room_heater: status, sensor_temp: temp} = body.interface;
+    const {ip: deviceip, room_id: roomid, room_temp} = body;
+    const {room_heater: status, sensor_temp: temp, sensor_humidity: humidity = 0} = body.interface;
 
-    if (!deviceip || !roomid || error_code || !temp) throw new Error(chalk.bgRed(`BAD RESPONSE FROM MODULE. Code: 4`));
+    if (!deviceip || !roomid || !temp) throw new Error(chalk.bgRed(`BAD JSON FROM MODULE ${roomid}. Code: 4`));
 
     let date = new Date().toLocaleDateString();
     let time = new Date().toLocaleTimeString();
@@ -46,6 +47,12 @@ module.exports = async (body) => {
             status: !!status,
             fulldate: `${date} ${time}`
         });
+
+        await HumidityInfo.create({
+            roomid,
+            humidity,
+            fulldate: `${date} ${time}`
+        });
         console.log(chalk.blue(`Room ${roomid} is created`));
     }
 // If room is present - update ip address and last response time
@@ -62,42 +69,84 @@ module.exports = async (body) => {
 
     /**
      * This method minimize records in DataBase
-     * Get current date and time. Adding 0 if month and day is less than 10
+     * Get current date and time.
      * Check is previous and before the previous one records in DataBase have temperature like current value from temperature module
      * If its equals we delete previous record.
      */
         // Find newest room in DataBase
-    let [newRoom, oldRoom] = await RoomStatistics.findAll({
+    let [previousRoom, oldRoom] = await RoomStatistics.findAll({
             order: [['id', 'DESC']],
             limit: 2,
             where: {roomid}
         });
 
-    if (!newRoom || !oldRoom) {
-        await RoomStatistics.create({
-            roomid,
-            room_temp: temp.toFixed(1),
-            status: !!status,
-            fulldate: `${date} ${time}`
-        });
-    }
-    const {room_temp: previpuosTemp} = oldRoom.dataValues;
-    const {id: lastId, room_temp: lastTemp} = newRoom.dataValues;
-    // If temperatures of current value and last value is equals - just update time
-    if (previpuosTemp === temp.toFixed(1) && lastTemp === temp.toFixed(1)) {
-        await RoomStatistics.destroy({
-            where: {
-                id: lastId
-            }
-        });
-        console.log(chalk.blue(`DELETE PREVIOUS ROOM`));
-    }
+    // if (!previousRoom || !oldRoom) {
+    //     await RoomStatistics.create({
+    //         roomid,
+    //         room_temp: temp.toFixed(1),
+    //         status: !!status,
+    //         fulldate: `${date} ${time}`
+    //     });
+    // }
+    // const {room_temp: previuosTemp} = oldRoom.dataValues;
+    // const {id: lastId, room_temp: lastTemp} = previousRoom.dataValues;
+    // // If temperatures of current value and last value is equals - just update time
+    // if (previuosTemp === temp.toFixed(1) && lastTemp === temp.toFixed(1)) {
+    //     await RoomStatistics.destroy({
+    //         where: {
+    //             id: lastId
+    //         }
+    //     });
+    //     console.log(chalk.blue(`DELETE PREVIOUS ROOM`));
+    // }
     // If they are not equals - create new record
+
+    if (previousRoom && oldRoom) {
+        const {room_temp: previuosTemp} = oldRoom.dataValues;
+        const {id: lastId, room_temp: lastTemp} = previousRoom.dataValues;
+        // If temperatures of current value and last value is equals - just update time
+        if (previuosTemp === temp.toFixed(1) && lastTemp === temp.toFixed(1)) {
+            await RoomStatistics.destroy({
+                where: {
+                    id: lastId
+                }
+            });
+            console.log(chalk.blue(`DELETE PREVIOUS TEMPERATURE `));
+        }
+    }
+    // Then we create new record
     await RoomStatistics.create({
         roomid,
         room_temp: temp.toFixed(1),
         status: !!status,
         fulldate: `${date} ${time}`
     });
+
+    [previousRoom, oldRoom] = await HumidityInfo.findAll({
+        order: [['id', 'DESC']],
+        limit: 2,
+        where: {roomid}
+    });
+
+    if (previousRoom && oldRoom) {
+        const {humidity: previuosHumidity} = oldRoom.dataValues;
+        const {id: lastId, humidity: lastHumidity} = previousRoom.dataValues;
+        // If humidity of current value and last value is equals - just update time
+        if (previuosHumidity === humidity.toFixed(1) && lastHumidity === humidity.toFixed(1)) {
+            await HumidityInfo.destroy({
+                where: {
+                    id: lastId
+                }
+            });
+            console.log(chalk.blue(`DELETE PREVIOUS HUMIDITY`));
+        }
+    }
+    // If they are not equals - create new record
+    await HumidityInfo.create({
+        roomid,
+        humidity: humidity.toFixed(1),
+        fulldate: `${date} ${time}`
+    });
+
     console.log(chalk.blue(`Info by room ${roomid} insert into statistic`));
 };
