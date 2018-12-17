@@ -102,10 +102,10 @@ module.exports = async (body) => {
     // If they are not equals - create new record
 
     if (previousRoom && oldRoom) {
-        const {room_temp: previuosTemp} = oldRoom.dataValues;
+        const {room_temp: oldTemp} = oldRoom.dataValues;
         const {id: lastId, room_temp: lastTemp} = previousRoom.dataValues;
         // If temperatures of current value and last value is equals - just update time
-        if (previuosTemp === temp.toFixed(1) && lastTemp === temp.toFixed(1)) {
+        if (oldTemp === temp.toFixed(1) && lastTemp === temp.toFixed(1)) {
             await RoomStatistics.destroy({
                 where: {
                     id: lastId
@@ -129,10 +129,10 @@ module.exports = async (body) => {
     });
 
     if (previousRoom && oldRoom) {
-        const {humidity: previuosHumidity} = oldRoom.dataValues;
+        const {humidity: oldHumidity} = oldRoom.dataValues;
         const {id: lastId, humidity: lastHumidity} = previousRoom.dataValues;
         // If humidity of current value and last value is equals - just update time
-        if (previuosHumidity === humidity.toFixed(1) && lastHumidity === humidity.toFixed(1)) {
+        if (oldHumidity === humidity.toFixed(1) && lastHumidity === humidity.toFixed(1)) {
             await HumidityInfo.destroy({
                 where: {
                     id: lastId

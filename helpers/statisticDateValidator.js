@@ -15,19 +15,13 @@ module.exports = (from, to) => {
         (+day < 10) ? day = '0' + day : day;
         from = `${year}-${month}-${day}`;
     }
-    else {
-        from = from + " 00";
-    }
 
     if (!to || to.includes('undefined') || to.includes('1970') || to.includes('Invalid')) {
         to = new Date(Date.now()).toLocaleDateString();
         let [year, month, day] = to.split('-');
         (+month < 10) ? month = '0' + month: month;
         (+day < 10) ? day = '0' + day : day;
-        to = `${year}-${month}-${day} 23:59`;
-    }
-    else  {
-        to = to + ' 23:59';
+        to = `${year}-${month}-${day}`;
     }
 
     return {
