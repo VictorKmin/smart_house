@@ -14,6 +14,7 @@ module.exports = async (req, res) => {
         const postgres = req.app.get('postgres');
         const RoomStatistics = postgres.getModel('RoomStatistics');
         const HumidityInfo = postgres.getModel('HumidityInfo');
+        const CO2Info = postgres.getModel('CO2Info');
         let {from, to, roomId} = req.body;
 
         // const {startingDate, finishDate} = dateValidator(from, to);
@@ -38,8 +39,8 @@ module.exports = async (req, res) => {
                     ]
                 }
             });
-        // SELECT * FROM humidity_info WHERE fulldate >= fromDate AND fulldate < toDate  AND roomid = roomId ORDER BY id ASC;
 
+        // SELECT * FROM humidity_info WHERE fulldate >= fromDate AND fulldate < toDate  AND roomid = roomId ORDER BY id ASC;
         const humidityStat = await HumidityInfo.findAll({
             order: [['id', 'ASC']],
             where: {
@@ -54,13 +55,31 @@ module.exports = async (req, res) => {
                 ]
             }
         });
-        if (!temperatureStat.length) throw new Error(`TEMPERATURE STATISTIC ON ROOM ${roomId} IS EMPTY. Code 3`);
-        if (!humidityStat.length) throw new Error(`HUMIDITY STATISTIC ON ROOM ${roomId} IS EMPTY. Code 3`);
+
+        // SELECT * FROM co2_info WHERE fulldate >= fromDate AND fulldate < toDate  AND roomid = roomId ORDER BY id ASC;
+        const co2Stat = await CO2Info.findAll({
+            order: [['id', 'ASC']],
+            where: {
+                [Op.and]: [
+                    {
+                        [Op.and]: [
+                            {fulldate: {[Op.gte]: from}},
+                            {fulldate: {[Op.lte]: to}}
+                        ]
+                    },
+                    {roomid: roomId}
+                ]
+            }
+        });
+        // if (!temperatureStat.length) throw new Error(`TEMPERATURE STATISTIC ON ROOM ${roomId} IS EMPTY. Code 3`);
+        // if (!humidityStat.length) throw new Error(`HUMIDITY STATISTIC ON ROOM ${roomId} IS EMPTY. Code 3`);
+        // if (!co2Stat.length) throw new Error(`HUMIDITY STATISTIC ON ROOM ${roomId} IS EMPTY. Code 3`);
         res.json({
             success: true,
             message: {
                 temperature: temperatureStat,
-                humidity: humidityStat
+                humidity: humidityStat,
+                co2: co2Stat
             }
         })
     } catch (e) {

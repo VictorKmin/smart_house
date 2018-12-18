@@ -10,7 +10,7 @@ const chalk = require('chalk');
 module.exports = (deviceip, temp) => {
     request.get(
         `http://${deviceip}/?room_temp=${temp}`, (error, response, body) => {
-            if (!error && response.statusCode === 200) console.log(body);
+            if (!error && response.statusCode === 200) console.log(chalk.green(body));
             else console.log(chalk.bgRed(error.message));
         }
     )
