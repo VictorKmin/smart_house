@@ -91,8 +91,7 @@ module.exports = async (body) => {
         const {room_temp: oldTemp} = oldRoom.dataValues;
         const {id: lastId, room_temp: lastTemp} = previousRoom.dataValues;
         // If temperatures of current value and last value is equals - just update time
-        if (oldTemp === temp.toFixed(1) && lastTemp === temp.toFixed(1)) {
-            console.log(chalk.bgRed ('TEMP'))
+        if (+oldTemp === +temp.toFixed(1) && +lastTemp === +temp.toFixed(1)) {
             await RoomStatistics.destroy({
                 where: {
                     id: lastId
@@ -118,11 +117,8 @@ module.exports = async (body) => {
     if (previousRoom && oldRoom) {
         const {humidity: oldHumidity} = oldRoom.dataValues;
         const {id: lastId, humidity: lastHumidity} = previousRoom.dataValues;
-        console.log(oldHumidity, 'OLD humid');
-        console.log(lastHumidity, ' LAST humid');
-        console.log(humidity, 'HUMID');
         // If humidity of current value and last value is equals - just update time
-        if (oldHumidity == humidity.toFixed(1) && lastHumidity == humidity.toFixed(1)) {
+        if (+oldHumidity === +humidity.toFixed(1) && +lastHumidity === +humidity.toFixed(1)) {
             await HumidityInfo.destroy({
                 where: {
                     id: lastId
@@ -148,7 +144,7 @@ module.exports = async (body) => {
         const {co2: oldCO2} = oldRoom.dataValues;
         const {id: lastId, co2: lastCO2} = previousRoom.dataValues;
         // If co2 of current value and last value is equals - destroy average record
-        if (oldCO2 == co2.toFixed(1) && lastCO2 == co2.toFixed(1)) {
+        if (+oldCO2 === +co2.toFixed(1) && +lastCO2 === +co2.toFixed(1)) {
             await CO2Info.destroy({
                 where: {
                     id: lastId
