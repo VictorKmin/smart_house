@@ -9,8 +9,10 @@
 module.exports = (days) => {
 
     let startingDate;
+    let startingTime;
     if (days) {
         startingDate = new Date(Date.now() - 86400000 * days).toLocaleDateString();
+        startingTime = new Date(Date.now() - 86400000 * days).toLocaleTimeString();
     } else {
         startingDate = new Date(Date.now() - 604800000);
         startingDate.setMonth(startingDate.getMonth() - 1);
@@ -20,13 +22,14 @@ module.exports = (days) => {
     let [fYear, fMonth, fDay] = startingDate.split('-');
     (+fMonth < 10) ? fMonth = '0' + fMonth : fMonth;
     (+fDay < 10) ? fDay = '0' + fDay : fDay;
-    startingDate = `${fYear}-${fMonth}-${fDay}`;
+    startingDate = `${fYear}-${fMonth}-${fDay} ${startingTime}`;
 
     let finishDate = new Date(Date.now()).toLocaleDateString();
+    let finishTime = new Date(Date.now()).toLocaleTimeString();
     let [year, month, day] = finishDate.split('-');
     (+month < 10) ? month = '0' + month : month;
     (+day < 10) ? day = '0' + day : day;
-    finishDate = `${year}-${month}-${day}`;
+    finishDate = `${year}-${month}-${day} ${finishTime}`;
 
     return {
         startingDate,

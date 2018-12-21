@@ -71,9 +71,6 @@ module.exports = async (req, res) => {
                 ]
             }
         });
-        // if (!temperatureStat.length) throw new Error(`TEMPERATURE STATISTIC ON ROOM ${roomId} IS EMPTY. Code 3`);
-        // if (!humidityStat.length) throw new Error(`HUMIDITY STATISTIC ON ROOM ${roomId} IS EMPTY. Code 3`);
-        // if (!co2Stat.length) throw new Error(`HUMIDITY STATISTIC ON ROOM ${roomId} IS EMPTY. Code 3`);
         res.json({
             success: true,
             message: {
