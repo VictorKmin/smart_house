@@ -39,13 +39,14 @@ module.exports = async (body) => {
             deviceip,
             lastresponse: Date.now(),
             room_temp,
-            isalive: true
+            isalive: true,
+            auto_mode: !!room_temp
         });
 
         await RoomStatistics.create({
             roomid,
             room_temp: temp.toFixed(1),
-            status: !!status,
+            heater_status: !!status,
             fulldate: `${date} ${time}`
         });
 
@@ -66,13 +67,13 @@ module.exports = async (body) => {
     await RoomInfo.update({
         deviceip,
         isalive: true,
+        auto_mode: !!room_temp,
         lastresponse: Date.now()
     }, {
         where: {
             roomid
         }
     });
-    console.log(chalk.blue(`Room ${roomid} is updated`));
 
     /**
      * This method minimize records in DataBase
@@ -104,7 +105,7 @@ module.exports = async (body) => {
     await RoomStatistics.create({
         roomid,
         room_temp: temp.toFixed(1),
-        status: !!status,
+        heater_status: !!status,
         fulldate: `${date} ${time}`
     });
 

@@ -11,7 +11,7 @@ module.exports = (sequelize, DataTypes) => {
         room_temp: {
             type: DataTypes.DOUBLE,
         },
-        status: {
+        heater_status: {
             type: DataTypes.BOOLEAN
         },
         fulldate: {

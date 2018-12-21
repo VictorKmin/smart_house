@@ -15,9 +15,9 @@ module.exports = async (req, res) => {
         const RoomStatistics = postgres.getModel('RoomStatistics');
         const HumidityInfo = postgres.getModel('HumidityInfo');
         const CO2Info = postgres.getModel('CO2Info');
-        let {from, to, roomId} = req.body;
+        let {countOfDays, roomId} = req.body;
 
-        // const {startingDate, finishDate} = dateValidator(from, to);
+       let {startingDate, finishDate} = dateValidator(countOfDays);
 
         /**
          * Show stats within certain dates.
@@ -31,8 +31,8 @@ module.exports = async (req, res) => {
                     [Op.and]: [
                         {
                             [Op.and]: [
-                                {fulldate: {[Op.gte]: from}},
-                                {fulldate: {[Op.lte]: to}}
+                                {fulldate: {[Op.gte]: startingDate}},
+                                {fulldate: {[Op.lte]: finishDate}}
                             ]
                         },
                         {roomid: roomId}
@@ -47,8 +47,8 @@ module.exports = async (req, res) => {
                 [Op.and]: [
                     {
                         [Op.and]: [
-                            {fulldate: {[Op.gte]: from}},
-                            {fulldate: {[Op.lte]: to}}
+                            {fulldate: {[Op.gte]: startingDate}},
+                            {fulldate: {[Op.lte]: finishDate}}
                         ]
                     },
                     {roomid: roomId}
@@ -63,8 +63,8 @@ module.exports = async (req, res) => {
                 [Op.and]: [
                     {
                         [Op.and]: [
-                            {fulldate: {[Op.gte]: from}},
-                            {fulldate: {[Op.lte]: to}}
+                            {fulldate: {[Op.gte]: startingDate}},
+                            {fulldate: {[Op.lte]: finishDate}}
                         ]
                     },
                     {roomid: roomId}

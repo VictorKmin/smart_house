@@ -9,14 +9,26 @@ module.exports = async (req, res) => {
         const {id, temp} = req.query;
         if (!id || !temp) throw new Error('Something wrong with request. Code: 1');
 
-        //Update room
-        await RoomInfo.update({
-            temp
-        }, {
-            where: {
-                roomid: id
-            }
-        });
+        if (temp == 0) {
+            await RoomInfo.update({
+                auto_mode: false
+            }, {
+                where: {
+                    roomid: id
+                }
+            });
+        } else {
+            //Update room
+            await RoomInfo.update({
+                temp,
+                auto_mode: true
+            }, {
+                where: {
+                    roomid: id
+                }
+            });
+        }
+
 
         const {deviceip} = await RoomInfo.findByPk(id);
         if (!deviceip) throw new Error('We have not this room in database. Code 5');

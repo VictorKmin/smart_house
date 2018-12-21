@@ -6,26 +6,30 @@
  * @param to - finish date search
  * @returns {{startingDate: string, finishDate: string}} - new value of dates
  */
-module.exports = (from, to) => {
+module.exports = (days) => {
 
-    if (!from || from.includes('undefined') || from.includes('1970') || from.includes('Invalid')) {
-        from = new Date(Date.now() - 259200000).toLocaleDateString();
-        let [year, month, day] = from.split('-');
-        (+month < 10) ? month = '0' + month: month;
-        (+day < 10) ? day = '0' + day : day;
-        from = `${year}-${month}-${day}`;
+    let startingDate;
+    if (days) {
+        startingDate = new Date(Date.now() - 86400000 * days).toLocaleDateString();
+    } else {
+        startingDate = new Date(Date.now() - 604800000);
+        startingDate.setMonth(startingDate.getMonth() - 1);
+        startingDate = startingDate.toLocaleDateString();
     }
 
-    if (!to || to.includes('undefined') || to.includes('1970') || to.includes('Invalid')) {
-        to = new Date(Date.now()).toLocaleDateString();
-        let [year, month, day] = to.split('-');
-        (+month < 10) ? month = '0' + month: month;
-        (+day < 10) ? day = '0' + day : day;
-        to = `${year}-${month}-${day}`;
-    }
+    let [fYear, fMonth, fDay] = startingDate.split('-');
+    (+fMonth < 10) ? fMonth = '0' + fMonth : fMonth;
+    (+fDay < 10) ? fDay = '0' + fDay : fDay;
+    startingDate = `${fYear}-${fMonth}-${fDay}`;
+
+    let finishDate = new Date(Date.now()).toLocaleDateString();
+    let [year, month, day] = finishDate.split('-');
+    (+month < 10) ? month = '0' + month : month;
+    (+day < 10) ? day = '0' + day : day;
+    finishDate = `${year}-${month}-${day}`;
 
     return {
-        startingDate: from,
-        finishDate: to
+        startingDate,
+        finishDate
     }
 };

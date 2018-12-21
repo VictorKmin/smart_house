@@ -14,10 +14,10 @@ module.exports = async (req, res) => {
         // Achtung Achtung Achtung
         //
         let resp = [];
-        const allRoomsIds = await RoomsInfo.findAll({});
-        if (!allRoomsIds.length) throw new Error('Sorry. We have not rooms in database. Code: 5');
-        for (const allRoomsId of allRoomsIds) {
-            const {roomid, temp, deviceip, isalive} = allRoomsId.dataValues;
+        const allRooms = await RoomsInfo.findAll({});
+        if (!allRooms.length) throw new Error('Sorry. We have not rooms in database. Code: 5');
+        for (const room of allRooms) {
+            const {roomid, temp, deviceip, isalive, auto_mode} = room.dataValues;
             const temperatureInfo = await RoomStatistics.findOne({
                 order: [['id', 'DESC']],
                 where: {
@@ -32,10 +32,14 @@ module.exports = async (req, res) => {
             });
 
             // if (!statisticByRoom) throw new Error(`Statistic by room ${roomid} is empty. Code 3`);
-            let {roomid: id, status, room_temp} = temperatureInfo.dataValues;
+            let {roomid: id, heater_status, room_temp} = temperatureInfo.dataValues;
             let {humidity} = humidityInfo.dataValues;
-            let respObj = {id, room_temp, status, temp, deviceip, isalive, humidity};
+            let respObj = {id, room_temp, heater_status, auto_mode, temp, deviceip, isalive, humidity};
             resp.push(respObj)
+
+            resp.sort((first, second) => {
+                return first.id - second.id
+            })
         }
         res.json({
             success: true,

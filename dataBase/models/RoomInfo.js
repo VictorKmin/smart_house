@@ -16,6 +16,9 @@ module.exports = (sequelize, DataTypes) => {
         },
         isalive: {
             type: DataTypes.BOOLEAN
+        },
+        auto_mode: {
+            type: DataTypes.BOOLEAN
         }
     }, {
         tableName: 'roomsinfo',
