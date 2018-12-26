@@ -8,7 +8,7 @@ const mainController = require('../controllers/skyNetComandCenter');
  * @param deviceip - ip of device, where we send order
  * @param temp - temperature to keeping
  */
-module.exports = (deviceip, temp) => {
+module.exports = (deviceip, temp, io) => {
     request.get(
         `http://${deviceip}/?room_temp=${temp}`, (error, response, body) => {
             if (!error && response.statusCode === 200) mainController(JSON.parse(body))

@@ -17,7 +17,7 @@ module.exports = async (req, res) => {
         const CO2Info = postgres.getModel('CO2Info');
         let {countOfDays, roomId} = req.body;
 
-       let {startingDate, finishDate} = dateValidator(countOfDays);
+        let {startingDate, finishDate} = dateValidator(countOfDays);
 
         /**
          * Show stats within certain dates.
@@ -82,7 +82,7 @@ module.exports = async (req, res) => {
     } catch (e) {
         console.log(chalk.bgRed(e.message));
         res.json({
-            success:false,
+            success: false,
             message: e.message,
         })
     }

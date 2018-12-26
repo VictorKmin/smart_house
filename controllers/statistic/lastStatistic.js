@@ -7,6 +7,16 @@ const chalk = require('chalk');
  */
 module.exports = async (req, res) => {
     try {
+
+        const socket = req.socket;
+        console.log(socket);
+
+        socket.on('getRoom', function (msg) {
+            console.log('___________________');
+            console.log(msg);
+            console.log('___________________');
+        });
+
         const postgres = req.app.get('postgres');
         const RoomStatistics = postgres.getModel('RoomStatistics');
         const HumidityInfo = postgres.getModel('HumidityInfo');
@@ -35,16 +45,17 @@ module.exports = async (req, res) => {
             let {roomid: id, heater_status, room_temp} = temperatureInfo.dataValues;
             let {humidity} = humidityInfo.dataValues;
             let respObj = {id, room_temp, heater_status, auto_mode, temp, deviceip, isalive, humidity};
-            resp.push(respObj)
+            resp.push(respObj);
 
             resp.sort((first, second) => {
                 return first.id - second.id
             })
         }
-        res.json({
-            success: true,
-            message: resp
-        })
+        // res.json({
+        //     success: true,
+        //     message: resp
+        // });
+
 
     } catch (e) {
         console.log(chalk.bgRed(e.message));

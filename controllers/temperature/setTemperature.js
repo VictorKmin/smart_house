@@ -3,6 +3,7 @@ const chalk = require('chalk');
 
 module.exports = async (req, res) => {
     try {
+        const io = req.io;
         const postgres = req.app.get('postgres');
         const RoomInfo = postgres.getModel('RoomInfo');
         if (!RoomInfo) throw new Error('Cant connect to DataBase. Code: 1');
@@ -33,7 +34,7 @@ module.exports = async (req, res) => {
         const {deviceip} = await RoomInfo.findByPk(id);
         if (!deviceip) throw new Error('We have not this room in database. Code 5');
 
-        sendReq(deviceip, temp);
+        sendReq(deviceip, temp, io);
 
         res.json({
             success: true,
