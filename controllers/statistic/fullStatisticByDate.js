@@ -5,17 +5,17 @@ const chalk = require('chalk');
 /**
  * This method find in DataBase within dates from dateValidator method
  * Then returns array of values to Angular
- * @param req
- * @param res
- * @returns {Promise<void>}
+ * @returns {Promise<{success: boolean, message: {temperature: Array<Model>, humidity: Array<Model>, co2: Array<Model>}}>}
+ * @param body
  */
-module.exports = async (req, res) => {
+module.exports = async (body) => {
     try {
-        const postgres = req.app.get('postgres');
+        const postgres = require('../../dataBase/index').getInstance();
+
         const RoomStatistics = postgres.getModel('RoomStatistics');
         const HumidityInfo = postgres.getModel('HumidityInfo');
         const CO2Info = postgres.getModel('CO2Info');
-        let {countOfDays, roomId} = req.body;
+        let {countOfDays, roomId} = body;
 
         let {startingDate, finishDate} = dateValidator(countOfDays);
 
@@ -71,20 +71,19 @@ module.exports = async (req, res) => {
                 ]
             }
         });
-        res.json({
+        return {
             success: true,
             message: {
                 temperature: temperatureStat,
                 humidity: humidityStat,
                 co2: co2Stat
             }
-        })
+        }
     } catch (e) {
         console.log(chalk.bgRed(e.message));
-        res.json({
+        return {
             success: false,
             message: e.message,
-        })
+        }
     }
-
 };

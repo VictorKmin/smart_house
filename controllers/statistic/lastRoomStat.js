@@ -1,23 +1,12 @@
 const chalk = require('chalk');
+const postgres = require('../../dataBase/index').getInstance();
+
 /**
  * This method takes last statistic by all rooms in database
- * @param req
- * @param res
- * @returns {Promise<void>}
+ * @returns {Promise<Array>}
  */
-module.exports = async (req, res) => {
+module.exports = async ()=> {
     try {
-
-        const socket = req.socket;
-        console.log(socket);
-
-        socket.on('getRoom', function (msg) {
-            console.log('___________________');
-            console.log(msg);
-            console.log('___________________');
-        });
-
-        const postgres = req.app.get('postgres');
         const RoomStatistics = postgres.getModel('RoomStatistics');
         const HumidityInfo = postgres.getModel('HumidityInfo');
         const RoomsInfo = postgres.getModel('RoomInfo');
@@ -51,17 +40,12 @@ module.exports = async (req, res) => {
                 return first.id - second.id
             })
         }
-        // res.json({
-        //     success: true,
-        //     message: resp
-        // });
 
+        return resp;
 
     } catch (e) {
         console.log(chalk.bgRed(e.message));
-        res.json({
-            success: false,
-            message: e.message,
-        })
+
+        return e;
     }
 };

@@ -9,21 +9,33 @@ const {resolve: resolvePath} = require('path');
 const mainController = require('./router/main');
 // const cron = require('node-cron');
 // const clearDatabase = require('./helpers/clearDatabase');
-const getStatistic = require('./router/statistics');
-const apiRouter = require('./router/api/setTemp');
-const postgres = new require('./dataBase').getInstance();
-postgres.setModels();
 
-app.set('postgres', postgres);
+
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({extended: true}));
-let s ;
+
+const getRooms = require('./controllers/statistic/lastRoomStat');
+const getFullStat = require('./controllers/statistic/fullStatisticByDate');
+const changeRoomTemp = require('./controllers/temperature/setTemperature');
+const getOneRoomStat = require('./controllers/statistic/getOneRoomStat');
+
+let s;
+
 io.on("connection", socket => {
     s = socket;
-    socket.on('getRoom', function (msg) {
-        console.log('___________________');
-        console.log(msg);
-        console.log('___________________');
+    socket.on('getRoom', async () => {
+        socket.emit('rooms', await getRooms())
+    });
+
+    socket.on('buildChart', async body => {
+        socket.emit('charts', await getFullStat(body))
+    });
+
+    socket.on('changeTemp', async body => {
+        await changeRoomTemp(body.roomId, body.temp);
+        const oneRoomStat = await getOneRoomStat(body.roomId);
+        socket.emit('oneRoom', oneRoomStat);
+        // socket.emit('rooms', await getRooms());
     });
 });
 app.use((req, res, next) => {
@@ -31,17 +43,12 @@ app.use((req, res, next) => {
     res.setHeader("Access-Control-Allow-Credentials", true);
     res.setHeader("Access-Control-Allow-Methods", "*");
     res.setHeader("Access-Control-Allow-Headers", "*");
-    next();
-});
 
-app.use((req, res, next) => {
     req.socket = s;
     next();
 });
 
 app.use('/', mainController);
-app.use('/stat', getStatistic);
-app.use('/api', apiRouter);
 
 /**
  * Child-process to working with Modules

@@ -6,27 +6,7 @@ const postgres = new require('../dataBase').getInstance();
 postgres.setModels();
 
 
-const getStat = require('../helpers/stat');
-
-// router.get('/', (req, res) => {
-// try {
-//     console.log(req.body);
-//
-//     mainController(req.body);
-//     res.json({
-//         success: true,
-//         statusCode: 200,
-//         message: 'OK'
-//     })
-// }
-// catch (e) {
-//     console.log(chalk.bgRed(e.message));
-//     res.json({
-//         success: false,
-//         message: e.message
-//     })
-// }
-// });
+const getStat = require('../controllers/statistic/lastRoomStat');
 
 router.post('/', async (req, res) => {
     try {
