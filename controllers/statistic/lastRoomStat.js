@@ -5,8 +5,9 @@ const postgres = require('../../dataBase/index').getInstance();
  * This method takes last statistic by all rooms in database
  * @returns {Promise<Array>}
  */
-module.exports = async ()=> {
+module.exports = async () => {
     try {
+        console.log(chalk.bgRed('FULL STAT START'))
         const RoomStatistics = postgres.getModel('RoomStatistics');
         const HumidityInfo = postgres.getModel('HumidityInfo');
         const RoomsInfo = postgres.getModel('RoomInfo');
@@ -30,7 +31,6 @@ module.exports = async ()=> {
                 },
             });
 
-            // if (!statisticByRoom) throw new Error(`Statistic by room ${roomid} is empty. Code 3`);
             let {roomid: id, heater_status, room_temp} = temperatureInfo.dataValues;
             let {humidity} = humidityInfo.dataValues;
             let respObj = {id, room_temp, heater_status, auto_mode, temp, deviceip, isalive, humidity};
@@ -40,6 +40,7 @@ module.exports = async ()=> {
                 return first.id - second.id
             })
         }
+        console.log(chalk.bgRed('FULL STAT END'))
 
         return resp;
 

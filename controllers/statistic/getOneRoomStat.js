@@ -7,7 +7,6 @@ const postgres = require('../../dataBase/index').getInstance();
  */
 module.exports = async (roomId) => {
     try {
-
         console.log(chalk.bgRed('ONE ROOM START'))
         const RoomStatistics = postgres.getModel('RoomStatistics');
         const HumidityInfo = postgres.getModel('HumidityInfo');
@@ -28,7 +27,6 @@ module.exports = async (roomId) => {
             },
         });
 
-        // if (!statisticByRoom) throw new Error(`Statistic by room ${roomid} is empty. Code 3`);
         let {roomid: id, heater_status, room_temp} = temperatureInfo.dataValues;
         let {humidity} = humidityInfo.dataValues;
 

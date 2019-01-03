@@ -1,8 +1,9 @@
 const chalk = require('chalk');
 const postgres = new require('../dataBase').getInstance();
 postgres.setModels();
-const mainController = require('../controllers/skyNetComandCenter');
-const getStat = require('../controllers/statistic/lastRoomStat');
+const mainController = require('../controllers/dataBaseController');
+const getOneRoomStat = require('../controllers/statistic/getOneRoomStat');
+
 
 module.exports = async (req, res) => {
     try {
@@ -17,9 +18,8 @@ module.exports = async (req, res) => {
         await mainController(req.body);
         const {temp} = await RoomInfo.findByPk(room_id);
 
-        const allRoomsStat = await getStat();
-        socket.emit('rooms', allRoomsStat);
-
+        const oneRoomStat = await getOneRoomStat(room_id);
+        await socket.emit('oneRoom', oneRoomStat);
         res.json({
             success: true,
             statusCode: 200,

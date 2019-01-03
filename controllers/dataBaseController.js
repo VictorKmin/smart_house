@@ -1,6 +1,5 @@
 const chalk = require('chalk');
 const postgres = new require('../dataBase').getInstance();
-postgres.setModels();
 
 module.exports = async (body) => {
     console.log(chalk.bgRed('SKY NET START'));
@@ -24,7 +23,7 @@ module.exports = async (body) => {
     (+day < 10) ? day = '0' + day : day;
     date = `${year}-${month}-${day}`;
 
-    console.log(chalk.bgGreen.black(`Response form ${deviceip} is good`));
+    console.log(chalk.bgGreen.black(`Response form room ${roomid} is good`));
 
     /**
      * Check is room present in DataBase.

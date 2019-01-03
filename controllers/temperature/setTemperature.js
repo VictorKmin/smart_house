@@ -1,4 +1,5 @@
 const sendReq = require('../../helpers/sendRequest');
+const request = require('request-promise');
 const chalk = require('chalk');
 const postgres = new require('../../dataBase').getInstance();
 
@@ -31,7 +32,8 @@ module.exports = async (roomId, temp) => {
         const {deviceip} = await RoomInfo.findByPk(roomId);
         if (!deviceip) throw new Error('We have not this room in database. Code 5');
 
-        await sendReq(deviceip, temp);
+        return request(`http://${deviceip}/?room_temp=${temp}`)
+        // await sendReq(deviceip, temp);
 
     } catch (e) {
         console.log(chalk.bgRed(e.message))

@@ -17,6 +17,7 @@ const getRooms = require('./controllers/statistic/lastRoomStat');
 const getFullStat = require('./controllers/statistic/fullStatisticByDate');
 const changeRoomTemp = require('./controllers/temperature/setTemperature');
 const getOneRoomStat = require('./controllers/statistic/getOneRoomStat');
+const base = require('./controllers/dataBaseController');
 
 let s;
 
@@ -31,9 +32,16 @@ io.on("connection", socket => {
     });
 
     socket.on('changeTemp', async body => {
-        await changeRoomTemp(body.roomId, body.temp);
-        const oneRoomStat = await getOneRoomStat(body.roomId);
-        await socket.emit('oneRoom', oneRoomStat);
+        changeRoomTemp(body.roomId, body.temp)
+            .then(async value => {
+                await base(JSON.parse(value))
+            })
+            .then(() => {
+                return getOneRoomStat(body.roomId)
+            })
+            .then(value => {
+                socket.emit('oneRoom', value);
+            })
     });
 });
 app.use((req, res, next) => {
