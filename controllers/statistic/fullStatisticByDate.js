@@ -1,4 +1,5 @@
 const dateValidator = require('../../helpers/statisticDateValidator');
+const smoother = require('../../helpers/smoothingStat');
 const Sequelize = require("sequelize");
 const Op = Sequelize.Op;
 const chalk = require('chalk');
@@ -25,7 +26,7 @@ module.exports = async (body) => {
          * @type {Array<Model>}
          */
             // SELECT * FROM temp_info WHERE fulldate >= fromDate AND fulldate < toDate  AND roomid = roomId ORDER BY id ASC;
-        const temperatureStat = await RoomStatistics.findAll({
+        let temperatureStat = await RoomStatistics.findAll({
                 order: [['id', 'ASC']],
                 where: {
                     [Op.and]: [
@@ -41,7 +42,7 @@ module.exports = async (body) => {
             });
 
         // SELECT * FROM humidity_info WHERE fulldate >= fromDate AND fulldate < toDate  AND roomid = roomId ORDER BY id ASC;
-        const humidityStat = await HumidityInfo.findAll({
+        let humidityStat = await HumidityInfo.findAll({
             order: [['id', 'ASC']],
             where: {
                 [Op.and]: [
@@ -57,7 +58,7 @@ module.exports = async (body) => {
         });
 
         // SELECT * FROM co2_info WHERE fulldate >= fromDate AND fulldate < toDate  AND roomid = roomId ORDER BY id ASC;
-        const co2Stat = await CO2Info.findAll({
+        let co2Stat = await CO2Info.findAll({
             order: [['id', 'ASC']],
             where: {
                 [Op.and]: [
@@ -71,6 +72,11 @@ module.exports = async (body) => {
                 ]
             }
         });
+
+        temperatureStat = smoother(temperatureStat);
+        // humidityStat = smoother(humidityStat);
+        // co2Stat = smoother(co2Stat);
+
         return {
             success: true,
             message: {

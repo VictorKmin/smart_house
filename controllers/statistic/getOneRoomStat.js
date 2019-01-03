@@ -7,7 +7,7 @@ const postgres = require('../../dataBase/index').getInstance();
  */
 module.exports = async (roomId) => {
     try {
-        console.log(chalk.bgRed('ONE ROOM START'))
+        console.log(chalk.bgRed('ONE ROOM START'));
         const RoomStatistics = postgres.getModel('RoomStatistics');
         const HumidityInfo = postgres.getModel('HumidityInfo');
         const RoomsInfo = postgres.getModel('RoomInfo');

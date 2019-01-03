@@ -4,20 +4,18 @@ const http = require('http').Server(app);
 const io = require('socket.io')(http);
 
 const {fork} = require('child_process');
-const bodyParser = require('body-parser');
 const {resolve: resolvePath} = require('path');
-const mainController = require('./router/main');
 // const cron = require('node-cron');
 // const clearDatabase = require('./helpers/clearDatabase');
 
-app.use(bodyParser.json());
-app.use(bodyParser.urlencoded({extended: true}));
+app.use(express.json());
 
+const mainController = require('./controllers/moduleRequest');
 const getRooms = require('./controllers/statistic/lastRoomStat');
 const getFullStat = require('./controllers/statistic/fullStatisticByDate');
 const changeRoomTemp = require('./controllers/temperature/setTemperature');
 const getOneRoomStat = require('./controllers/statistic/getOneRoomStat');
-const base = require('./controllers/dataBaseController');
+const statisticInserter = require('./controllers/dataBaseController');
 
 let s;
 
@@ -34,7 +32,7 @@ io.on("connection", socket => {
     socket.on('changeTemp', async body => {
         changeRoomTemp(body.roomId, body.temp)
             .then(async value => {
-                await base(JSON.parse(value))
+                await statisticInserter(JSON.parse(value))
             })
             .then(() => {
                 return getOneRoomStat(body.roomId)

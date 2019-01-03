@@ -11,13 +11,11 @@
   "license": "ISC",
   "dependencies": {
     "@types/socket.io": "^2.1.2",
-    "body-parser": "^1.18.3",
     "chalk": "^2.4.1",
     "express": "^4.16.4",
     "moment": "^2.22.2",
     "node-cron": "^2.0.3",
     "pg": "^7.6.1",
-    "request": "latest",
     "request-promise": "^4.2.2",
     "sequelize": "^4.41.2",
     "socket.io": "^2.2.0"
