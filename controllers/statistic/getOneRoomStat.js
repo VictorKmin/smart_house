@@ -7,6 +7,8 @@ const postgres = require('../../dataBase/index').getInstance();
  */
 module.exports = async (roomId) => {
     try {
+
+        console.log(chalk.bgRed('ONE ROOM START'))
         const RoomStatistics = postgres.getModel('RoomStatistics');
         const HumidityInfo = postgres.getModel('HumidityInfo');
         const RoomsInfo = postgres.getModel('RoomInfo');
@@ -29,11 +31,9 @@ module.exports = async (roomId) => {
         // if (!statisticByRoom) throw new Error(`Statistic by room ${roomid} is empty. Code 3`);
         let {roomid: id, heater_status, room_temp} = temperatureInfo.dataValues;
         let {humidity} = humidityInfo.dataValues;
-        let respObj = {id, room_temp, heater_status, auto_mode, temp, deviceip, isalive, humidity};
 
-        console.log(chalk.bgRed('REQ'));
-        return respObj;
-
+        console.log(chalk.bgRed('ONE ROOM END'));
+        return {id, room_temp, heater_status, auto_mode, temp, deviceip, isalive, humidity};
     } catch (e) {
         console.log(chalk.bgRed(e.message));
     }

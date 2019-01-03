@@ -8,10 +8,10 @@ const mainController = require('../controllers/skyNetComandCenter');
  * @param temp - temperature to keeping
  */
 module.exports = (deviceip, temp) => {
-    request.get(
-        `http://${deviceip}/?room_temp=${temp}`, (error, response, body) => {
+   request.get(
+        `http://${deviceip}/?room_temp=${temp}`,async (error, response, body) => {
             if (!error && response.statusCode === 200) {
-                mainController(JSON.parse(body))
+                await mainController(JSON.parse(body))
             }
             else console.log(chalk.bgRed(error.message));
         }

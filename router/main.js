@@ -1,14 +1,10 @@
-const express = require('express');
-const router = express.Router();
 const chalk = require('chalk');
-const mainController = require('../controllers/skyNetComandCenter');
 const postgres = new require('../dataBase').getInstance();
 postgres.setModels();
-
-
+const mainController = require('../controllers/skyNetComandCenter');
 const getStat = require('../controllers/statistic/lastRoomStat');
 
-router.post('/', async (req, res) => {
+module.exports = async (req, res) => {
     try {
         const socket = req.socket;
         const RoomInfo = postgres.getModel('RoomInfo');
@@ -17,11 +13,12 @@ router.post('/', async (req, res) => {
         console.log(req.body);
         const {room_id} = req.body;
         if (!room_id) throw new Error(" Bad response from module. Code: 4");
+
         await mainController(req.body);
         const {temp} = await RoomInfo.findByPk(room_id);
 
-        const rooms = await getStat();
-        socket.emit('rooms', rooms);
+        const allRoomsStat = await getStat();
+        socket.emit('rooms', allRoomsStat);
 
         res.json({
             success: true,
@@ -35,6 +32,4 @@ router.post('/', async (req, res) => {
             message: e.message
         })
     }
-});
-
-module.exports = router;
+};

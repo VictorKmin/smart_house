@@ -10,7 +10,6 @@ const mainController = require('./router/main');
 // const cron = require('node-cron');
 // const clearDatabase = require('./helpers/clearDatabase');
 
-
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({extended: true}));
 
@@ -34,8 +33,7 @@ io.on("connection", socket => {
     socket.on('changeTemp', async body => {
         await changeRoomTemp(body.roomId, body.temp);
         const oneRoomStat = await getOneRoomStat(body.roomId);
-        socket.emit('oneRoom', oneRoomStat);
-        // socket.emit('rooms', await getRooms());
+        await socket.emit('oneRoom', oneRoomStat);
     });
 });
 app.use((req, res, next) => {

@@ -28,17 +28,11 @@ module.exports = async (roomId, temp) => {
             });
         }
 
-
         const {deviceip} = await RoomInfo.findByPk(roomId);
         if (!deviceip) throw new Error('We have not this room in database. Code 5');
 
-        sendReq(deviceip, temp);
+        await sendReq(deviceip, temp);
 
-        return {
-            success: true,
-            statusCode: 200,
-            message: 'OK'
-        }
     } catch (e) {
         console.log(chalk.bgRed(e.message))
     }
