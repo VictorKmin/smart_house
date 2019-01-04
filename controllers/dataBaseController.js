@@ -2,7 +2,6 @@ const chalk = require('chalk');
 const postgres = new require('../dataBase').getInstance();
 
 module.exports = async (body) => {
-    console.log(chalk.bgRed('SKY NET START'));
 
     const RoomInfo = postgres.getModel('RoomInfo');
     const RoomStatistics = postgres.getModel('RoomStatistics');
@@ -162,7 +161,5 @@ module.exports = async (body) => {
     });
 
     console.log(chalk.blue(`Info by room ${roomid} insert into statistic`));
-
-    console.log(chalk.bgRed('SKY NET END'));
 
 };

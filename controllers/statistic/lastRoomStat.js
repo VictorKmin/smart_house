@@ -7,7 +7,6 @@ const postgres = require('../../dataBase/index').getInstance();
  */
 module.exports = async () => {
     try {
-        console.log(chalk.bgRed('FULL STAT START'));
         const RoomStatistics = postgres.getModel('RoomStatistics');
         const HumidityInfo = postgres.getModel('HumidityInfo');
         const RoomsInfo = postgres.getModel('RoomInfo');
@@ -40,8 +39,6 @@ module.exports = async () => {
                 return first.id - second.id
             })
         }
-        console.log(chalk.bgRed('FULL STAT END'));
-
         return resp;
 
     } catch (e) {

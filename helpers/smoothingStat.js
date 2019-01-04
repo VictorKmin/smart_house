@@ -1,6 +1,7 @@
-module.exports = (statArray) => {
+module.exports = (statArray, paramName) => {
 
     let smoothingCoefficient = 1;
+    console.log(statArray.length);
     let smoothedArray = [];
 
     if (statArray.length >= 500 && statArray.length < 1000) {
@@ -21,15 +22,30 @@ module.exports = (statArray) => {
 
     let arrayToSmooth = [];
     for (const elem of statArray) {
-        // console.log(elem.dataValues['room_temp']);
-        arrayToSmooth.push(+elem.dataValues['room_temp']);
-        if (arrayToSmooth.length = smoothingCoefficient) {
-            let avg;
-            for (const argument of arrayToSmooth) {
-                avg += argument
+        let {roomid, fulldate, [paramName]: parameter} = elem.dataValues;
+        let date = new Date(fulldate).getTime();
+        arrayToSmooth.push({parameter, date});
+
+        if (arrayToSmooth.length === smoothingCoefficient) {
+            let avgParam = 0;
+            let avgDate = 0;
+
+            for (const element of arrayToSmooth) {
+                avgParam = avgParam + +element.parameter;
+                avgDate += +element.date;
             }
-            avg = avg/arrayToSmooth.length;
-            smoothedArray.push(avg)
+
+            avgParam = avgParam / arrayToSmooth.length;
+            avgDate = avgDate / arrayToSmooth.length;
+            avgDate = `${new Date(avgDate).toLocaleDateString()} ${new Date(avgDate).toLocaleTimeString()}`;
+
+            smoothedArray.push({
+                roomid,
+                [paramName]: avgParam,
+                fulldate: avgDate
+            });
+
+            arrayToSmooth = [];
         }
     }
 

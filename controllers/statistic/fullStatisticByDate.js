@@ -73,9 +73,9 @@ module.exports = async (body) => {
             }
         });
 
-        temperatureStat = smoother(temperatureStat);
-        // humidityStat = smoother(humidityStat);
-        // co2Stat = smoother(co2Stat);
+        temperatureStat = smoother(temperatureStat, 'room_temp');
+        humidityStat = smoother(humidityStat, 'humidity');
+        co2Stat = smoother(co2Stat, 'co2');
 
         return {
             success: true,
