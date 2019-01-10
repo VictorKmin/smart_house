@@ -1,7 +1,6 @@
 module.exports = (statArray, paramName) => {
 
     let smoothingCoefficient = 1;
-    console.log(statArray.length);
     let smoothedArray = [];
 
     if (statArray.length >= 500 && statArray.length < 1000) {
@@ -41,7 +40,7 @@ module.exports = (statArray, paramName) => {
 
             smoothedArray.push({
                 roomid,
-                [paramName]: avgParam,
+                [paramName]: avgParam.toFixed(2),
                 fulldate: avgDate
             });
 

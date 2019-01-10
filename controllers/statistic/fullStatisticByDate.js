@@ -16,9 +16,9 @@ module.exports = async (body) => {
         const RoomStatistics = postgres.getModel('RoomStatistics');
         const HumidityInfo = postgres.getModel('HumidityInfo');
         const CO2Info = postgres.getModel('CO2Info');
-        let {countOfDays, roomId} = body;
+        let {dayOfStartSearch, dayOfFinishSearch, roomId} = body;
 
-        let {startingDate, finishDate} = dateValidator(countOfDays);
+        let {startingDate, finishDate} = dateValidator(dayOfStartSearch, dayOfFinishSearch);
 
         /**
          * Show stats within certain dates.

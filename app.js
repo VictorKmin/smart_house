@@ -10,11 +10,15 @@ const {resolve: resolvePath} = require('path');
 
 app.use(express.json());
 
-const mainController = require('./controllers/moduleRequest');
+const postgres = require('./dataBase/index').getInstance();
+postgres.setModels()
+
+const moduleRequest = require('./controllers/moduleRequest');
 const getRooms = require('./controllers/statistic/lastRoomStat');
 const getFullStat = require('./controllers/statistic/fullStatisticByDate');
 const changeRoomTemp = require('./controllers/temperature/setTemperature');
 const getOneRoomStat = require('./controllers/statistic/getOneRoomStat');
+const getDaysCount = require('./helpers/getCountOfDays');
 const statisticInserter = require('./controllers/dataBaseController');
 
 let s;
@@ -26,7 +30,8 @@ io.on("connection", socket => {
     });
 
     socket.on('buildChart', async body => {
-        socket.emit('charts', await getFullStat(body))
+        socket.emit('charts', await getFullStat(body));
+        socket.emit('timeLine', await getDaysCount(body.roomId));
     });
 
     socket.on('changeTemp', async body => {
@@ -38,7 +43,7 @@ io.on("connection", socket => {
                 return getOneRoomStat(body.roomId)
             })
             .then(value => {
-                socket.emit('oneRoom', value);
+                socket.emit('lastRoomStat', value);
             })
     });
 });
@@ -52,7 +57,7 @@ app.use((req, res, next) => {
     next();
 });
 
-app.use('/', mainController);
+app.use('/', moduleRequest);
 
 /**
  * Child-process to working with Modules
@@ -60,11 +65,13 @@ app.use('/', mainController);
  * Check is our module is alive
  */
 (() => {
-    console.log('Start modules');
     const isModuleAlive = fork(resolvePath('./microservices/checkModules'));
+    isModuleAlive.send('start');
+
     // const sendTempRequest = fork(resolvePath('./microservices/sendTempRequest'));
-    isModuleAlive.send('startCheck');
     // sendTempRequest.send('sendReq');
+
+    console.log('Child process started !');
 })();
 
 /**

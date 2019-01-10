@@ -12,6 +12,12 @@ module.exports = async () => {
         const RoomsInfo = postgres.getModel('RoomInfo');
         // Achtung Achtung Achtung
         //
+
+        //  SELECT t.roomid, s.room_temp, t.mT, s.id FROM (
+        //          SELECT roomid, MAX(time) AS mT FROM statistic GROUP BY roomid
+        //      ) t JOIN statistic s ON s.roomid = t.roomid AND s.time = t.mT;
+        //  SELECT * FROM statistic WHERE fulldate >= '2018-11-25 11' AND fulldate < '2018-11-25 12'  AND roomid = 1;
+
         let resp = [];
         const allRooms = await RoomsInfo.findAll({});
         if (!allRooms.length) throw new Error('Sorry. We have not rooms in database. Code: 5');
@@ -43,7 +49,5 @@ module.exports = async () => {
 
     } catch (e) {
         console.log(chalk.bgRed(e.message));
-
-        return e;
     }
 };

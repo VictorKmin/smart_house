@@ -1,6 +1,5 @@
 const chalk = require('chalk');
 const postgres = new require('../dataBase').getInstance();
-postgres.setModels();
 const mainController = require('./dataBaseController');
 const getOneRoomStat = require('./statistic/getOneRoomStat');
 
@@ -19,7 +18,7 @@ module.exports = async (req, res) => {
         const {temp} = await RoomInfo.findByPk(room_id);
 
         const oneRoomStat = await getOneRoomStat(room_id);
-        await socket.emit('oneRoom', oneRoomStat);
+        await socket.emit('updateChart', oneRoomStat);
         res.json({
             success: true,
             statusCode: 200,
