@@ -2,7 +2,7 @@ const chalk = require('chalk');
 const postgres = new require('../dataBase').getInstance();
 const mainController = require('./dataBaseController');
 const getOneRoomStat = require('./statistic/getOneRoomStat');
-
+const getRooms = require('../controllers/statistic/lastRoomStat');
 
 module.exports = async (req, res) => {
     try {
@@ -19,6 +19,8 @@ module.exports = async (req, res) => {
 
         const oneRoomStat = await getOneRoomStat(room_id);
         await socket.emit('updateChart', oneRoomStat);
+        socket.emit('rooms', await getRooms());
+
         res.json({
             success: true,
             statusCode: 200,

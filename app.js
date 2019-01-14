@@ -11,7 +11,7 @@ const {resolve: resolvePath} = require('path');
 app.use(express.json());
 
 const postgres = require('./dataBase/index').getInstance();
-postgres.setModels()
+postgres.setModels();
 
 const moduleRequest = require('./controllers/moduleRequest');
 const getRooms = require('./controllers/statistic/lastRoomStat');
@@ -67,9 +67,6 @@ app.use('/', moduleRequest);
 (() => {
     const isModuleAlive = fork(resolvePath('./microservices/checkModules'));
     isModuleAlive.send('start');
-
-    // const sendTempRequest = fork(resolvePath('./microservices/sendTempRequest'));
-    // sendTempRequest.send('sendReq');
 
     console.log('Child process started !');
 })();
