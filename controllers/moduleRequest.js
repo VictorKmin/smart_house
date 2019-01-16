@@ -12,7 +12,6 @@ module.exports = async (req, res) => {
         console.log(chalk.green('Request from module'));
         console.log(req.body);
         const {room_id} = req.body;
-        if (!room_id) throw new Error(" Bad response from module. Code: 4");
 
         await mainController(req.body);
         const {temp} = await RoomInfo.findByPk(room_id);

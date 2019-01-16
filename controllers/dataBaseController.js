@@ -12,7 +12,11 @@ module.exports = async (body) => {
     const {ip: deviceip, room_id: roomid, room_temp} = body;
     const {room_heater: status, sensor_temp: temp, sensor_humidity: humidity, sensor_co2: co2 = 0} = body.interface;
 
-    if (!deviceip || !roomid || !temp) throw new Error(chalk.bgRed(`BAD JSON FROM MODULE ${roomid}. Code: 4`));
+    if (!deviceip)  throw new Error(chalk.bgRed(`BAD JSON FROM MODULE ${roomid}. Code: 4 IP`));
+    if (!roomid)  throw new Error(chalk.bgRed(`BAD JSON FROM MODULE ${roomid}. Code: 4 ROOM ID`));
+    if (!temp && temp !== 0)  throw new Error(chalk.bgRed(`BAD JSON FROM MODULE ${roomid}. Sensor_temp is NULL Code: 4`));
+    if (!humidity && humidity !== 0)  throw new Error(chalk.bgRed(`BAD JSON FROM MODULE ${roomid}. Humidity is NULL Code: 4 humidity`));
+    if (!co2 && co2 !== 0)  throw new Error(chalk.bgRed(`BAD JSON FROM MODULE ${roomid}. CO2 is NULL Code: 4 CO2`));
 
     let date = new Date().toLocaleDateString();
     let time = new Date().toLocaleTimeString();
