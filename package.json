@@ -19,5 +19,8 @@
     "request-promise": "^4.2.2",
     "sequelize": "^4.41.2",
     "socket.io": "^2.2.0"
+  },
+  "devDependencies": {
+    "sequelize-cli": "^5.5.1"
   }
 }
