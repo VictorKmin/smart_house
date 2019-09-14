@@ -1,17 +1,21 @@
 const Sequelize = require("sequelize");
 const Op = Sequelize.Op;
 const chalk = require('chalk');
+
+const {ONE_MONTH} = require('../constants');
 /**
  * @param postgres - data base
  * @returns {Promise<void>}
  */
-module.exports = async (postgres) => {
+module.exports = async postgres => {
     try {
         const RoomStatistics = postgres.getModel('RoomStatistics');
-        if (!RoomStatistics) throw new Error(`Cant connect to data base. Code: 1`);
-                                            //31 days
-        let olderThanOneMonth = Date.now() - 2678400000;
-        // DELETE * FORM statistics WHERE time <= olderThanOneMonth;
+
+        if (!RoomStatistics) {
+            throw new Error(`Cant connect to data base. Code: 1`);
+        }
+        let olderThanOneMonth = Date.now() - ONE_MONTH;
+
         await RoomStatistics.destroy({
             where: {
                 time: {

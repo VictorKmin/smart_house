@@ -1,3 +1,5 @@
+const {ONE_DAY} = require('../constants');
+
 /**
  * Method to check date from Angular datepicker.
  * If we have not date or date contains 1970, undefined, Invalid words
@@ -17,11 +19,11 @@ module.exports = (startingDay, finishedDay) => {
     //     startingDate.setMonth(startingDate.getMonth() - 1);
     //     startingDate = startingDate.toLocaleDateString();
     // } else {
-        startingDate = new Date(Date.now() - 86400000 * startingDay).toLocaleDateString();
-        startingTime = new Date(Date.now() - 86400000 * startingDay).toLocaleTimeString();
+        startingDate = new Date(Date.now() - ONE_DAY * startingDay).toLocaleDateString();
+        startingTime = new Date(Date.now() - ONE_DAY * startingDay).toLocaleTimeString();
 
-        finishDate = new Date(Date.now() - 86400000 * finishedDay).toLocaleDateString();
-        finishTime = new Date(Date.now() - 86400000 * finishedDay).toLocaleTimeString();
+        finishDate = new Date(Date.now() - ONE_DAY * finishedDay).toLocaleDateString();
+        finishTime = new Date(Date.now() - ONE_DAY * finishedDay).toLocaleTimeString();
     // }
 
     let [fYear, fMonth, fDay] = startingDate.split('-');

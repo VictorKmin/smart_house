@@ -1,9 +1,11 @@
 const chalk = require('chalk');
-const postgres = require('../dataBase/index').getInstance();
+
+const postgres = require('../dataBase').getInstance();
+const {PING_MODULE_TIMEOUT}  = require('../constants');
 postgres.setModels();
 
 process.on('message', () => {
-    setInterval(checkModules, 100000);
+    setInterval(checkModules, PING_MODULE_TIMEOUT);
 });
 
 /**
@@ -13,14 +15,17 @@ process.on('message', () => {
  */
 async function checkModules() {
     try {
+        const currentTime = Date.now();
+
         console.log(chalk.magenta('Start to check modules....'));
         const RoomInfo = postgres.getModel('RoomInfo');
         if (!RoomInfo) throw new Error(`Cant connect to data base. Code: 1`);
 
         const allRooms = await RoomInfo.findAll({});
+
         for (const {roomid, lastresponse} of allRooms) {
-            let currentTime = Date.now();
             console.log(chalk.cyan(`Last response in room ${roomid} was ${currentTime - lastresponse}ms ago`));
+
             if (currentTime - lastresponse > 300000) {
               RoomInfo.update({
                   isalive: false,
@@ -29,6 +34,7 @@ async function checkModules() {
                         roomid
                     }
                 });
+
                console.log(chalk.bgRed(`Module in room ${roomid} is dead ! Code: 2`));
             }
         }

@@ -1,7 +1,8 @@
 const chalk = require('chalk');
-const postgres = new require('../dataBase').getInstance();
 
-module.exports = async (body) => {
+const postgres = require('../dataBase').getInstance();
+
+module.exports = async body => {
     const RoomInfo = postgres.getModel('RoomInfo');
     const RoomStatistics = postgres.getModel('RoomStatistics');
     const HumidityInfo = postgres.getModel('HumidityInfo');
