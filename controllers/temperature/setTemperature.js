@@ -1,6 +1,7 @@
 const request = require('request-promise');
 const chalk = require('chalk');
-const postgres = new require('../../dataBase').getInstance();
+
+const postgres = require('../../dataBase').getInstance();
 
 module.exports = async (roomId, temp) => {
     try {

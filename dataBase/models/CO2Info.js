@@ -1,3 +1,5 @@
+const  {DB_TABLES} = require('../../constants');
+
 module.exports = (sequelize, DataTypes) => {
     const CO2Info = sequelize.define('CO2Info', {
         id: {
@@ -15,7 +17,7 @@ module.exports = (sequelize, DataTypes) => {
             type: DataTypes.STRING,
         }
     }, {
-        tableName: 'co2_info',
+        tableName: DB_TABLES.CO2,
         timestamps: false
     });
     return CO2Info

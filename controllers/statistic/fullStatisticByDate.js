@@ -1,8 +1,11 @@
-const dateValidator = require('../../helpers/statisticDateValidator');
-const smoother = require('../../helpers/smoothingStat');
 const Sequelize = require("sequelize");
 const Op = Sequelize.Op;
 const chalk = require('chalk');
+
+const {smoother, dateValidator} = require('../../helpers');
+const postgres = require('../../dataBase').getInstance();
+
+
 /**
  * This method find in DataBase within dates from dateValidator method
  * Then returns array of values to Angular
@@ -11,7 +14,6 @@ const chalk = require('chalk');
  */
 module.exports = async (body) => {
     try {
-        const postgres = require('../../dataBase/index').getInstance();
 
         const RoomStatistics = postgres.getModel('RoomStatistics');
         const HumidityInfo = postgres.getModel('HumidityInfo');

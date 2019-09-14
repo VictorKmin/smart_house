@@ -1,3 +1,4 @@
+const  {DB_TABLES} = require('../../constants');
 
 module.exports = (sequelize, DataTypes) => {
     const RoomInfo = sequelize.define('RoomInfo', {
@@ -21,7 +22,7 @@ module.exports = (sequelize, DataTypes) => {
             type: DataTypes.BOOLEAN
         }
     }, {
-        tableName: 'roomsinfo',
+        tableName: DB_TABLES.ROOM,
         timestamps: false
     });
     return RoomInfo

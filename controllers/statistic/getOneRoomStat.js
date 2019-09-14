@@ -1,4 +1,5 @@
 const chalk = require('chalk');
+
 const postgres = require('../../dataBase').getInstance();
 
 /**

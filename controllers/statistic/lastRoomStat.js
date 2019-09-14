@@ -1,5 +1,6 @@
 const chalk = require('chalk');
-const postgres = require('../../dataBase/index').getInstance();
+
+const postgres = require('../../dataBase').getInstance();
 
 /**
  * This method takes last statistic by all rooms in database

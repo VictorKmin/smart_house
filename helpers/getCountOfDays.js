@@ -1,5 +1,6 @@
-const dataBase = require('../dataBase').getInstance();
 const Sequelize = require("sequelize");
+
+const dataBase = require('../dataBase').getInstance();
 
 module.exports = async id => {
     let Info = dataBase.getModel('RoomStatistics');

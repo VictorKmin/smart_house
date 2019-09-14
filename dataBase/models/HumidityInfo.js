@@ -1,3 +1,5 @@
+const  {DB_TABLES} = require('../../constants');
+
 module.exports = (sequelize, DataTypes) => {
     const HumidityInfo = sequelize.define('HumidityInfo', {
         id: {
@@ -15,7 +17,7 @@ module.exports = (sequelize, DataTypes) => {
             type: DataTypes.STRING,
         }
     }, {
-        tableName: 'humidity_info',
+        tableName: DB_TABLES.HUMIDITY,
         timestamps: false
     });
     return HumidityInfo
