@@ -1,11 +1,11 @@
 const chalk = require('chalk');
 
 const postgres = require('../dataBase').getInstance();
-const {PING_MODULE_TIMEOUT}  = require('../constants');
+const {DATES}  = require('../constants');
 postgres.setModels();
 
 process.on('message', () => {
-    setInterval(checkModules, PING_MODULE_TIMEOUT);
+    setInterval(checkModules, DATES.PING_MODULE_TIMEOUT);
 });
 
 /**

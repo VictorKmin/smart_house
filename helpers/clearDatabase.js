@@ -2,7 +2,7 @@ const Sequelize = require("sequelize");
 const Op = Sequelize.Op;
 const chalk = require('chalk');
 
-const {ONE_MONTH} = require('../constants');
+const {DATES} = require('../constants');
 /**
  * @param postgres - data base
  * @returns {Promise<void>}
@@ -14,7 +14,7 @@ module.exports = async postgres => {
         if (!RoomStatistics) {
             throw new Error(`Cant connect to data base. Code: 1`);
         }
-        let olderThanOneMonth = Date.now() - ONE_MONTH;
+        let olderThanOneMonth = Date.now() - DATES.ONE_MONTH;
 
         await RoomStatistics.destroy({
             where: {

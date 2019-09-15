@@ -1,13 +1,12 @@
 {
-  "name": "smartOffice",
+  "name": "smartoffice",
   "version": "1.0.0",
-  "description": "",
   "main": "app.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "migrate:up": "npx sequelize-cli db:migrate",
     "migrate:down": "npx sequelize-cli db:migrate:undo",
-    "create:db": "node_modules/.bin/sequelize db:create"
+    "create:db": "sequelize db:create"
   },
   "keywords": [],
   "author": "",
@@ -31,5 +30,14 @@
     "@types/dotenv": "^6.1.1",
     "@types/express": "^4.17.0",
     "@types/sequelize": "^4.28.4"
-  }
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/VictorKmin/smart_office.git"
+  },
+  "bugs": {
+    "url": "https://github.com/VictorKmin/smart_office/issues"
+  },
+  "homepage": "https://github.com/VictorKmin/smart_office#readme",
+  "description": ""
 }

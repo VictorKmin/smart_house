@@ -1,4 +1,4 @@
-const {ONE_DAY} = require('../constants');
+const {DATES} = require('../constants');
 
 /**
  * Method to check date from Angular datepicker.
@@ -14,17 +14,11 @@ module.exports = (startingDay, finishedDay) => {
     let finishDate;
     let finishTime;
 
-    // if (startingDay % 30 === 0) {
-    //     startingDate = new Date(Date.now());
-    //     startingDate.setMonth(startingDate.getMonth() - 1);
-    //     startingDate = startingDate.toLocaleDateString();
-    // } else {
-        startingDate = new Date(Date.now() - ONE_DAY * startingDay).toLocaleDateString();
-        startingTime = new Date(Date.now() - ONE_DAY * startingDay).toLocaleTimeString();
+    startingDate = new Date(Date.now() - DATES.ONE_DAY * startingDay).toLocaleDateString();
+    startingTime = new Date(Date.now() - DATES.ONE_DAY * startingDay).toLocaleTimeString();
 
-        finishDate = new Date(Date.now() - ONE_DAY * finishedDay).toLocaleDateString();
-        finishTime = new Date(Date.now() - ONE_DAY * finishedDay).toLocaleTimeString();
-    // }
+    finishDate = new Date(Date.now() - DATES.ONE_DAY * finishedDay).toLocaleDateString();
+    finishTime = new Date(Date.now() - DATES.ONE_DAY * finishedDay).toLocaleTimeString();
 
     let [fYear, fMonth, fDay] = startingDate.split('-');
     (+fMonth < 10) ? fMonth = '0' + fMonth : fMonth;

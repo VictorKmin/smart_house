@@ -2,7 +2,7 @@ const Sequelize = require("sequelize");
 const Op = Sequelize.Op;
 const chalk = require('chalk');
 
-const {smoother, dateValidator} = require('../../helpers');
+const {smoothingStat, statisticDateValidator} = require('../../helpers');
 const postgres = require('../../dataBase').getInstance();
 
 
@@ -20,7 +20,7 @@ module.exports = async (body) => {
         const CO2Info = postgres.getModel('CO2Info');
         let {dayOfStartSearch, dayOfFinishSearch, roomId} = body;
 
-        let {startingDate, finishDate} = dateValidator(dayOfStartSearch, dayOfFinishSearch);
+        let {startingDate, finishDate} = statisticDateValidator(dayOfStartSearch, dayOfFinishSearch);
 
         /**
          * Show stats within certain dates.
@@ -75,9 +75,9 @@ module.exports = async (body) => {
             }
         });
 
-        temperatureStat = smoother(temperatureStat, 'room_temp');
-        humidityStat = smoother(humidityStat, 'humidity');
-        co2Stat = smoother(co2Stat, 'co2');
+        temperatureStat = smoothingStat(temperatureStat, 'room_temp');
+        humidityStat = smoothingStat(humidityStat, 'humidity');
+        co2Stat = smoothingStat(co2Stat, 'co2');
 
         return {
             success: true,
