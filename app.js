@@ -80,7 +80,7 @@ app.use('/', moduleRequest);
 //     clearDatabase(postgres)
 // });
 
-http.listen(5000, (err) => {
+http.listen(5000, err => {
     if (err) console.log(err);
     else {
         console.log('Listen 5000');

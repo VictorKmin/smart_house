@@ -8,16 +8,18 @@ module.exports = async (req, res) => {
     try {
         const socket = req.socket;
         const RoomInfo = postgres.getModel('RoomInfo');
-        if (!RoomInfo) throw new Error('Cant connect to DataBase. Code: 1');
+        const {room_id} = req.body;
+
         console.log(chalk.green('Request from module'));
         console.log(req.body);
-        const {room_id} = req.body;
 
         await mainController(req.body);
         const {temp} = await RoomInfo.findByPk(room_id);
 
         const oneRoomStat = await getOneRoomStat(room_id);
+
         await socket.emit('updateChart', oneRoomStat);
+
         socket.emit('rooms', await lastRoomStat());
 
         res.json({

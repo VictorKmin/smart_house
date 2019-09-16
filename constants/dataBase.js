@@ -1,5 +1,5 @@
 module.exports = {
-    dbName: 'smart_office',
-    dbUser: 'root',
-    dbPass: 'root'
+    dbName: process.env.DB_NAME || 'smart_office',
+    dbUser: process.env.DB_USER || 'root',
+    dbPass: process.env.DB_PASS || 'root'
 }

@@ -18,7 +18,7 @@
     "dayjs": "^1.8.15",
     "dotenv": "^6.1.1",
     "node-cron": "^2.0.3",
-    "pg": "^7.6.1",
+    "mysql2": "^1.7.0",
     "request-promise": "^4.2.2",
     "socket.io": "^2.2.0",
     "sequelize": "^5.10.0",

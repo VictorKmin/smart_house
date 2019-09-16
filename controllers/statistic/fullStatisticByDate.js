@@ -12,12 +12,11 @@ const postgres = require('../../dataBase').getInstance();
  * @returns {Promise<{success: boolean, message: {temperature: Array<Model>, humidity: Array<Model>, co2: Array<Model>}}>}
  * @param body
  */
-module.exports = async (body) => {
+module.exports = async body => {
     try {
 
         const RoomStatistics = postgres.getModel('RoomStatistics');
         const HumidityInfo = postgres.getModel('HumidityInfo');
-        const CO2Info = postgres.getModel('CO2Info');
         let {dayOfStartSearch, dayOfFinishSearch, roomId} = body;
 
         let {startingDate, finishDate} = statisticDateValidator(dayOfStartSearch, dayOfFinishSearch);
@@ -60,6 +59,8 @@ module.exports = async (body) => {
         });
 
         // SELECT * FROM co2_info WHERE fulldate >= fromDate AND fulldate < toDate  AND roomid = roomId ORDER BY id ASC;
+
+        // TODO think how to move to service
         let co2Stat = await CO2Info.findAll({
             order: [['id', 'ASC']],
             where: {
@@ -75,6 +76,7 @@ module.exports = async (body) => {
             }
         });
 
+        // TODO No magic strings
         temperatureStat = smoothingStat(temperatureStat, 'room_temp');
         humidityStat = smoothingStat(humidityStat, 'humidity');
         co2Stat = smoothingStat(co2Stat, 'co2');

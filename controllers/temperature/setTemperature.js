@@ -6,6 +6,7 @@ const postgres = require('../../dataBase').getInstance();
 module.exports = async (roomId, temp) => {
     try {
         const RoomInfo = postgres.getModel('RoomInfo');
+
         if (!RoomInfo) throw new Error('Cant connect to DataBase. Code: 1');
         if (!roomId || temp === undefined) throw new Error('Something wrong with request. Code: 1');
 

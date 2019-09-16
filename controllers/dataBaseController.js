@@ -1,24 +1,23 @@
 const chalk = require('chalk');
 
 const postgres = require('../dataBase').getInstance();
+const {co2Service} = require('../service');
 
 module.exports = async body => {
     const RoomInfo = postgres.getModel('RoomInfo');
     const RoomStatistics = postgres.getModel('RoomStatistics');
     const HumidityInfo = postgres.getModel('HumidityInfo');
-    const CO2Info = postgres.getModel('CO2Info');
-
-    if (!RoomInfo || !RoomStatistics || !HumidityInfo || !CO2Info) throw new Error(chalk.bgRed(`Cant connect to data base. Code: 1`));
 
     const {ip: deviceip, room_id: roomid, room_temp} = body;
     const {room_heater: status, sensor_temp: temp, sensor_humidity: humidity, sensor_co2: co2 = 0} = body.interface;
 
-    if (!deviceip)  throw new Error(chalk.bgRed(`BAD JSON FROM MODULE ${roomid}. Code: 4 IP`));
-    if (!roomid)  throw new Error(chalk.bgRed(`BAD JSON FROM MODULE ${roomid}. Code: 4 ROOM ID`));
-    if (!temp && temp !== 0)  throw new Error(chalk.bgRed(`BAD JSON FROM MODULE ${roomid}. Sensor_temp is NULL Code: 4`));
-    if (!humidity && humidity !== 0)  throw new Error(chalk.bgRed(`BAD JSON FROM MODULE ${roomid}. Humidity is NULL Code: 4 humidity`));
-    if (!co2 && co2 !== 0)  throw new Error(chalk.bgRed(`BAD JSON FROM MODULE ${roomid}. CO2 is NULL Code: 4 CO2`));
+    if (!deviceip) throw new Error(chalk.bgRed(`BAD JSON FROM MODULE ${roomid}. Code: 4 IP`));
+    if (!roomid) throw new Error(chalk.bgRed(`BAD JSON FROM MODULE ${roomid}. Code: 4 ROOM ID`));
+    if (!temp && temp !== 0) throw new Error(chalk.bgRed(`BAD JSON FROM MODULE ${roomid}. Sensor_temp is NULL Code: 4`));
+    if (!humidity && humidity !== 0) throw new Error(chalk.bgRed(`BAD JSON FROM MODULE ${roomid}. Humidity is NULL Code: 4 humidity`));
+    if (!co2 && co2 !== 0) throw new Error(chalk.bgRed(`BAD JSON FROM MODULE ${roomid}. CO2 is NULL Code: 4 CO2`));
 
+    // TODO move to helper
     let date = new Date().toLocaleDateString();
     let time = new Date().toLocaleTimeString();
     let [year, month, day] = date.split('-');
@@ -53,17 +52,9 @@ module.exports = async body => {
             fulldate: `${date} ${time}`
         });
 
-        await HumidityInfo.create({
-            roomid,
-            humidity,
-            fulldate: `${date} ${time}`
-        });
+        await HumidityInfo.create({roomid, humidity, fulldate: `${date} ${time}`});
+        await co2Service.createCO2({roomid, co2, fulldate: `${date} ${time}`});
 
-        await CO2Info.create({
-            roomid,
-            co2,
-            fulldate: `${date} ${time}`
-        });
         console.log(chalk.blue(`Room ${roomid} is created`));
     }
 // If room is present - update ip address and last response time
@@ -138,27 +129,21 @@ module.exports = async body => {
         fulldate: `${date} ${time}`
     });
 
-    [previousRoom, oldRoom] = await CO2Info.findAll({
-        order: [['id', 'DESC']],
-        limit: 2,
-        where: {roomid}
-    });
+    [previousRoom, oldRoom] = await co2Service.getAllInfoByParams({roomid}, 'id', 'DESC', 2);
 
     if (previousRoom && oldRoom) {
         const {co2: oldCO2} = oldRoom.dataValues;
         const {id: lastId, co2: lastCO2} = previousRoom.dataValues;
         // If co2 of current value and last value is equals - destroy average record
         if (+oldCO2 === +co2.toFixed(1) && +lastCO2 === +co2.toFixed(1)) {
-            await CO2Info.destroy({
-                where: {
-                    id: lastId
-                }
-            });
+
+            await co2Service.destroyCO2({id: lastId});
+
             console.log(chalk.blue(`DELETE PREVIOUS CO2`));
         }
     }
     // If they are not equals - create new record
-    await CO2Info.create({
+    await co2Service.createCO2({
         roomid,
         co2: co2.toFixed(1),
         fulldate: `${date} ${time}`
