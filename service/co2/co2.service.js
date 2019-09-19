@@ -27,12 +27,12 @@ module.exports = {
         return co2 && co2.dataValues
     },
 
-    createCO2: async (co2Object)=> {
-        return await CO2.create(co2Object)
+    createCO2: async co2Object => {
+        return CO2.create(co2Object)
     },
 
     destroyCO2: async destroyObject => {
-        return await CO2.destroy({where: destroyObject})
+        return CO2.destroy({where: destroyObject})
     }
 
 };

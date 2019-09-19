@@ -9,7 +9,7 @@ module.exports = (() => {
     function initConnection() {
         let client = new Sequalize(DB_CONST.dbName, DB_CONST.dbUser, DB_CONST.dbPass, {
             host: 'localhost',
-            dialect: 'postgres',
+            dialect: 'mariadb',
             operatorsAliases: false,
             pool: {
                 max: 5,
