@@ -1,11 +1,10 @@
 const chalk = require('chalk');
 
-const postgres = require('../dataBase').getInstance();
-const {co2Service, humidityService} = require('../service');
-const {currentDateBuilder} = require('../helpers');
+const postgres = require('../../dataBase').getInstance();
+const {co2Service, humidityService, roomService} = require('../../service');
+const {currentDateBuilder} = require('../../helpers');
 
 module.exports = async body => {
-    const RoomInfo = postgres.getModel('RoomInfo');
     const RoomStatistics = postgres.getModel('RoomStatistics');
 
     const {ip: deviceip, room_id: roomid, room_temp} = body;
@@ -28,10 +27,10 @@ module.exports = async body => {
      * If room is already present, we just update parameters of room
      * @type {Model}
      */
-    let isRoomInDB = await RoomInfo.findByPk(roomid);
+    let isRoomInDB = await roomService.findRoomById(roomid);
 //If we have not room - create it
     if (!isRoomInDB) {
-        await RoomInfo.create({
+        await roomService.create({
             roomid,
             deviceip,
             lastresponse: Date.now(),
@@ -53,16 +52,13 @@ module.exports = async body => {
         console.log(chalk.blue(`Room ${roomid} is created`));
     }
 // If room is present - update ip address and last response time
-    await RoomInfo.update({
-        deviceip,
-        isalive: true,
-        auto_mode: !!room_temp,
-        lastresponse: Date.now()
-    }, {
-        where: {
-            roomid
-        }
-    });
+    await roomService.updateRoomById(roomid,
+        {
+            deviceip,
+            isalive: true,
+            auto_mode: !!room_temp,
+            lastresponse: Date.now()
+        });
 
     /**
      * This method minimize records in DataBase
@@ -74,7 +70,7 @@ module.exports = async body => {
     let [previousRoom, oldRoom] = await RoomStatistics.findAll({
             order: [['id', 'DESC']],
             limit: 2,
-            where: { roomid }
+            where: {roomid}
         });
 
     if (previousRoom && oldRoom) {
@@ -99,7 +95,7 @@ module.exports = async body => {
     });
 
     [previousRoom, oldRoom] = await humidityService.getAllInfoByParams(
-        { roomid },
+        {roomid},
         'id',
         'DESC',
         2
@@ -110,7 +106,7 @@ module.exports = async body => {
         const {id: lastId, humidity: lastHumidity} = previousRoom.dataValues;
         // If humidity of current value and last value is equals - just update time
         if (+oldHumidity === +humidity.toFixed(1) && +lastHumidity === +humidity.toFixed(1)) {
-            await humidityService.destroyByParams({ id: lastId });
+            await humidityService.destroyByParams({id: lastId});
             console.log(chalk.blue(`DELETE PREVIOUS HUMIDITY`));
         }
     }

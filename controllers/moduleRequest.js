@@ -1,7 +1,7 @@
 const chalk = require('chalk');
 
 const postgres = require('../dataBase').getInstance();
-const mainController = require('./dataBaseController');
+const mainController = require('./dataBase/dataBaseController');
 const {getOneRoomStat, lastRoomStat} = require('./statistic');
 
 module.exports = async (req, res) => {

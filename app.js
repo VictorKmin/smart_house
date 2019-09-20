@@ -10,37 +10,32 @@ const {resolve: resolvePath} = require('path');
 
 app.use(express.json());
 
-const postgres = require('./dataBase/index').getInstance();
+const postgres = require('./dataBase').getInstance();
 postgres.setModels();
 
-const moduleRequest = require('./controllers/moduleRequest');
-const getRooms = require('./controllers/statistic/lastRoomStat');
-const getFullStat = require('./controllers/statistic/fullStatisticByDate');
-const changeRoomTemp = require('./controllers/temperature/setTemperature');
-const getOneRoomStat = require('./controllers/statistic/getOneRoomStat');
-const getDaysCount = require('./helpers/getCountOfDays');
-const statisticInserter = require('./controllers/dataBaseController');
+const {moduleRequest, dbController, statistic, temperature} = require('./controllers');
+const {getCountOfDays} = require('./helpers');
 
 let s;
 
 io.on("connection", socket => {
     s = socket;
     socket.on('getRoom', async () => {
-        socket.emit('rooms', await getRooms())
+        socket.emit('rooms', await statistic.lastRoomStat())
     });
 
     socket.on('buildChart', async body => {
-        socket.emit('charts', await getFullStat(body));
-        socket.emit('timeLine', await getDaysCount(body.roomId));
+        socket.emit('charts', await statistic.fullStatisticByDate(body));
+        socket.emit('timeLine', await getCountOfDays(body.roomId));
     });
 
     socket.on('changeTemp', async body => {
-        changeRoomTemp(body.roomId, body.temp)
+        temperature.setTemperature(body.roomId, body.temp)
             .then(async value => {
-                await statisticInserter(JSON.parse(value))
+                await dbController.dbController(JSON.parse(value))
             })
             .then(() => {
-                return getOneRoomStat(body.roomId)
+                return statistic.getOneRoomStat(body.roomId)
             })
             .then(value => {
                 socket.emit('lastRoomStat', value);
