@@ -2,19 +2,18 @@ const express = require('express');
 const app = express();
 const http = require('http').Server(app);
 const io = require('socket.io')(http);
-
 const {fork} = require('child_process');
 const {resolve: resolvePath} = require('path');
 // const cron = require('node-cron');
-// const clearDatabase = require('./helpers/clearDatabase');
+
+// const clearDatabase = require('./helpers/clearDatabase')
+const {moduleRequest, dbController, statistic, temperature} = require('./controllers');
+const {getCountOfDays} = require('./helpers');
+const postgres = require('./dataBase').getInstance();
 
 app.use(express.json());
 
-const postgres = require('./dataBase').getInstance();
 postgres.setModels();
-
-const {moduleRequest, dbController, statistic, temperature} = require('./controllers');
-const {getCountOfDays} = require('./helpers');
 
 let s;
 

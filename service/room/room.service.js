@@ -1,7 +1,6 @@
 const db = require('../../dataBase').getInstance();
 const RoomModel = db.getModel('RoomInfo');
 
-
 module.exports = {
     create: async roomObject => {
         return RoomModel.create(roomObject)

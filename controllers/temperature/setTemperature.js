@@ -1,36 +1,19 @@
 const request = require('request-promise');
 const chalk = require('chalk');
 
-const postgres = require('../../dataBase').getInstance();
+const {roomService} = require('../../service');
 
 module.exports = async (roomId, temp) => {
     try {
-        const RoomInfo = postgres.getModel('RoomInfo');
-
-        if (!RoomInfo) throw new Error('Cant connect to DataBase. Code: 1');
         if (!roomId || temp === undefined) throw new Error('Something wrong with request. Code: 1');
 
-        if (+temp === 0) {
-            await RoomInfo.update({
-                auto_mode: false
-            }, {
-                where: {
-                    roomid: roomId
-                }
-            });
-        } else {
-            //Update room
-            await RoomInfo.update({
-                temp,
-                auto_mode: true
-            }, {
-                where: {
-                    roomid: roomId
-                }
-            });
-        }
+        +temp === 0 ?
+            await roomService.updateRoomById(roomId, {auto_mode: false}) :
+            await roomService.updateRoomById(roomId, {temp, auto_mode: true});
 
-        const {deviceip} = await RoomInfo.findByPk(roomId);
+
+        const {deviceip} = await roomService.findRoomById(roomId);
+
         if (!deviceip) throw new Error('We have not this room in database. Code 5');
 
         return request(`http://${deviceip}/?room_temp=${temp}`)
