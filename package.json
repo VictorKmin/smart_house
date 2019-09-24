@@ -6,7 +6,8 @@
     "test": "echo \"Error: no test specified\" && exit 1",
     "migrate:up": "npx sequelize-cli db:migrate",
     "migrate:down": "npx sequelize-cli db:migrate:undo",
-    "create:db": "sequelize db:create"
+    "create:db": "sequelize db:create",
+    "first": "sequelize db:create && npx sequelize-cli db:migrate"
   },
   "keywords": [],
   "author": "",
@@ -19,7 +20,8 @@
     "express": "^4.16.4",
     "mysql2": "^1.7.0",
     "node-cron": "^2.0.3",
-    "request-promise": "^4.2.2",
+    "request": "^2.88.0",
+    "request-promise": "^4.2.4",
     "sequelize": "^5.10.0",
     "sequelize-cli": "^5.5.0",
     "socket.io": "^2.2.0"
@@ -41,5 +43,5 @@
     "url": "https://github.com/VictorKmin/smart_office/issues"
   },
   "homepage": "https://github.com/VictorKmin/smart_office#readme",
-  "description": ""
+  "description": "Smart house project"
 }
