@@ -3,5 +3,6 @@ module.exports = {
     HUMIDITY: 'humidity_info',
     ROOM: 'room_info',
     TEMPERATURE: 'temp_info',
-    MOVING: 'moving'
+    MOVING: 'moving',
+    CONSTANTS: 'constant',
 }

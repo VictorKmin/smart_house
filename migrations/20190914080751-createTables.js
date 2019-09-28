@@ -4,6 +4,22 @@ const { DB_TABLES } = require('../constants');
 module.exports = {
     up: async (queryInterface, dataTypes) => {
         try {
+
+            const constants = {
+                id: {
+                    type: dataTypes.INTEGER,
+                    primaryKey: true
+                },
+                label: {
+                    type: dataTypes.STRING,
+                },
+                value: {
+                    type: dataTypes.STRING
+                }
+            }
+
+            await queryInterface.createTable(DB_TABLES.CONSTANTS, constants);
+
             const room_info = {
                 id: {
                     type: dataTypes.INTEGER,
@@ -142,7 +158,9 @@ module.exports = {
             await queryInterface.dropTable(DB_TABLES.TEMPERATURE);
             await queryInterface.dropTable(DB_TABLES.CO2);
             await queryInterface.dropTable(DB_TABLES.HUMIDITY);
+            await queryInterface.dropTable(DB_TABLES.MOVING);
             await queryInterface.dropTable(DB_TABLES.ROOM);
+            await queryInterface.dropTable(DB_TABLES.CONSTANTS);
             return Promise.resolve();
 
         } catch (e) {
