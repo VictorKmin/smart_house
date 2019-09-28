@@ -60,7 +60,7 @@ module.exports = async body => {
 
         // SELECT * FROM co2_info WHERE fulldate >= fromDate AND fulldate < toDate  AND roomid = roomId ORDER BY id ASC;
 
-        // TODO think how to move to service
+        // TODO think how to moving to service
         let co2Stat = await CO2Info.findAll({
             order: [['id', 'ASC']],
             where: {

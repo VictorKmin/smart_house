@@ -7,7 +7,7 @@ module.exports = (sequelize, DataTypes) => {
             primaryKey: true,
             autoIncrement: true
         },
-        roomid: {
+        room_id: {
             type: DataTypes.INTEGER,
         },
         room_temp: {
@@ -16,8 +16,9 @@ module.exports = (sequelize, DataTypes) => {
         heater_status: {
             type: DataTypes.BOOLEAN
         },
-        fulldate: {
+        full_date: {
             type: DataTypes.STRING,
+            defaultValue: sequelize.fn('now')
         }
     }, {
         tableName: DB_TABLES.TEMPERATURE,

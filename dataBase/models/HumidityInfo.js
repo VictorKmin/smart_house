@@ -7,14 +7,15 @@ module.exports = (sequelize, DataTypes) => {
             primaryKey: true,
             autoIncrement: true
         },
-        roomid: {
+        room_id: {
             type: DataTypes.INTEGER,
         },
         humidity: {
             type: DataTypes.DOUBLE,
         },
-        fulldate: {
+        full_date: {
             type: DataTypes.STRING,
+            defaultValue: sequelize.fn('now')
         }
     }, {
         tableName: DB_TABLES.HUMIDITY,

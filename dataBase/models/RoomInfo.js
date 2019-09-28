@@ -2,20 +2,20 @@ const  {DB_TABLES} = require('../../constants');
 
 module.exports = (sequelize, DataTypes) => {
     const RoomInfo = sequelize.define('RoomInfo', {
-        roomid: {
+        room_id: {
             type: DataTypes.INTEGER,
             primaryKey: true
         },
-        deviceip: {
+        device_ip: {
             type: DataTypes.STRING,
         },
-        lastresponse: {
+        last_response: {
             type: DataTypes.STRING
         },
         temp: {
             type: DataTypes.DOUBLE
         },
-        isalive: {
+        is_alive: {
             type: DataTypes.BOOLEAN
         },
         auto_mode: {

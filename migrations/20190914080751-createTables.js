@@ -1,43 +1,24 @@
 'use strict';
-const {DB_TABLES} = require('../constants');
+const { DB_TABLES } = require('../constants');
 
 module.exports = {
     up: async (queryInterface, dataTypes) => {
         try {
-            const co2info = {
-                id: {
-                    type: dataTypes.INTEGER,
-                    primaryKey: true,
-                    autoIncrement: true
-                },
-                roomid: {
-                    type: dataTypes.INTEGER
-                },
-                co2: {
-                    type: dataTypes.DOUBLE,
-                },
-                fulldate: {
-                    type: dataTypes.STRING,
-                }
-            };
-
-            await queryInterface.createTable(DB_TABLES.CO2, co2info);
-
             const room_info = {
-                roomid: {
+                id: {
                     type: dataTypes.INTEGER,
                     primaryKey: true
                 },
-                deviceip: {
+                device_ip: {
                     type: dataTypes.STRING,
                 },
-                lastresponse: {
+                last_response: {
                     type: dataTypes.STRING
                 },
                 temp: {
                     type: dataTypes.DOUBLE
                 },
-                isalive: {
+                is_alive: {
                     type: dataTypes.BOOLEAN
                 },
                 auto_mode: {
@@ -47,19 +28,50 @@ module.exports = {
 
             await queryInterface.createTable(DB_TABLES.ROOM, room_info);
 
+            const co2info = {
+                id: {
+                    type: dataTypes.INTEGER,
+                    primaryKey: true,
+                    autoIncrement: true
+                },
+                room_id: {
+                    type: dataTypes.INTEGER,
+                    references: {
+                        model: DB_TABLES.ROOM,
+                        key: 'id'
+                    },
+                    onUpdate: "CASCADE",
+                    onDelete: "CASCADE"
+                },
+                co2: {
+                    type: dataTypes.DOUBLE,
+                },
+                full_date: {
+                    type: dataTypes.STRING,
+                }
+            };
+
+            await queryInterface.createTable(DB_TABLES.CO2, co2info);
+
             const humidity_info = {
                 id: {
                     type: dataTypes.INTEGER,
                     primaryKey: true,
                     autoIncrement: true
                 },
-                roomid: {
+                room_id: {
                     type: dataTypes.INTEGER,
+                    references: {
+                        model: DB_TABLES.ROOM,
+                        key: 'id'
+                    },
+                    onUpdate: "CASCADE",
+                    onDelete: "CASCADE"
                 },
                 humidity: {
                     type: dataTypes.DOUBLE,
                 },
-                fulldate: {
+                full_date: {
                     type: dataTypes.STRING,
                 }
             };
@@ -73,8 +85,14 @@ module.exports = {
                     primaryKey: true,
                     autoIncrement: true
                 },
-                roomid: {
+                room_id: {
                     type: dataTypes.INTEGER,
+                    references: {
+                        model: DB_TABLES.ROOM,
+                        key: 'id'
+                    },
+                    onUpdate: "CASCADE",
+                    onDelete: "CASCADE"
                 },
                 room_temp: {
                     type: dataTypes.DOUBLE,
@@ -82,12 +100,36 @@ module.exports = {
                 heater_status: {
                     type: dataTypes.BOOLEAN
                 },
-                fulldate: {
+                full_date: {
                     type: dataTypes.STRING,
                 }
             };
 
             await queryInterface.createTable(DB_TABLES.TEMPERATURE, temperature_info);
+
+            const moving = {
+                id: {
+                    type: dataTypes.INTEGER,
+                    primaryKey: true,
+                    autoIncrement: true
+                },
+                room_id: {
+                    type: dataTypes.INTEGER,
+                    references: {
+                        model: DB_TABLES.ROOM,
+                        key: 'id'
+                    },
+                    onUpdate: "CASCADE",
+                    onDelete: "CASCADE",
+                    allowNull: true
+                },
+                full_date: {
+                    type: dataTypes.STRING,
+                }
+            };
+
+            await queryInterface.createTable(DB_TABLES.MOVING, moving);
+
         } catch (e) {
             console.log(e);
         }

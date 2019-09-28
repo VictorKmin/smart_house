@@ -8,6 +8,7 @@ const {resolve: resolvePath} = require('path');
 
 // const clearDatabase = require('./helpers/clearDatabase')
 const {moduleRequest, dbController, statistic, temperature} = require('./controllers');
+const {movingRouter} = require('./routes');
 const {getCountOfDays} = require('./helpers');
 const postgres = require('./dataBase').getInstance();
 
@@ -39,6 +40,9 @@ io.on("connection", socket => {
             .then(value => {
                 socket.emit('lastRoomStat', value);
             })
+            .catch(reason => {
+                console.error(reason)
+            })
     });
 });
 app.use((req, res, next) => {
@@ -51,6 +55,7 @@ app.use((req, res, next) => {
     next();
 });
 
+app.use('/moving', movingRouter);
 app.use('/', moduleRequest);
 
 /**
