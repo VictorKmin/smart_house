@@ -6,14 +6,14 @@ module.exports = {
         return RoomModel.create(roomObject)
     },
 
-    findRoomById: async roomId => {
-        const room = await RoomModel.findByPk(roomId);
+    findRoomById: async room_id => {
+        const room = await RoomModel.findByPk(room_id);
 
         return room && room.dataValues
     },
 
-    updateRoomById: async (roomid, patchObject) => {
-        return RoomModel.update(patchObject, {where: {roomid}})
+    updateRoomById: async (room_id, patchObject) => {
+        return RoomModel.update(patchObject, {where: {room_id}})
     }
 
 };

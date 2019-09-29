@@ -10,11 +10,11 @@ const {resolve: resolvePath} = require('path');
 const {moduleRequest, dbController, statistic, temperature} = require('./controllers');
 const {movingRouter} = require('./routes');
 const {getCountOfDays} = require('./helpers');
-const postgres = require('./dataBase').getInstance();
+const mariaDB = require('./dataBase').getInstance();
 
 app.use(express.json());
 
-postgres.setModels();
+mariaDB.setModels();
 
 let s;
 

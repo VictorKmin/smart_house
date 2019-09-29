@@ -8,7 +8,8 @@ module.exports = {
             const constants = {
                 id: {
                     type: dataTypes.INTEGER,
-                    primaryKey: true
+                    primaryKey: true,
+                    autoIncrement: true
                 },
                 label: {
                     type: dataTypes.STRING,
@@ -23,7 +24,8 @@ module.exports = {
             const room_info = {
                 id: {
                     type: dataTypes.INTEGER,
-                    primaryKey: true
+                    primaryKey: true,
+                    autoIncrement: true
                 },
                 device_ip: {
                     type: dataTypes.STRING,

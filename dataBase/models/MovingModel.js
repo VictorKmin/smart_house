@@ -1,7 +1,7 @@
 const  {DB_TABLES} = require('../../constants');
 
 module.exports = (sequelize, DataTypes) => {
-    const Moving = sequelize.define(DB_TABLES.MOVING, {
+    const Moving = sequelize.define("Moving", {
         id: {
             type: DataTypes.INTEGER,
             primaryKey: true,

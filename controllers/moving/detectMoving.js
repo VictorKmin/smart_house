@@ -1,15 +1,18 @@
-const {movingService} = require('../../service')
+const {movingService, constantService} = require('../../service');
+const {HOUSE} = require('../../constants');
 
 module.exports = async (req, res) => {
     try {
+        const movingObject = req.body;         // TODO validators
 
-        // TODO validators
-        // TODO constants table where will be stored all constants like is_detect_moving
+        const is_detect = await constantService.getConstantByLabel(HOUSE.IS_DETECT_MOVING);
 
-        const movingObject = req.body;
+        if (is_detect.value) {
+            // TODO if is_detect_moving === true -> send message to telegram
+            console.info('TELEGRAM MESSAGE')
+        }
 
-       await movingService.create(movingObject);
-       // TODO if is_detect_moving === true -> send message to telegram
+        await movingService.create(movingObject);
 
         res.json('OK')
     } catch (e) {

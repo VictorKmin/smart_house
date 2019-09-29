@@ -1,7 +1,7 @@
 const  {DB_TABLES} = require('../../constants');
 
 module.exports = (sequelize, DataTypes) => {
-    const Constants = sequelize.define(DB_TABLES.CONSTANTS, {
+    const Constant = sequelize.define('Constant', {
         id: {
             type: DataTypes.INTEGER,
             primaryKey: true
@@ -16,5 +16,5 @@ module.exports = (sequelize, DataTypes) => {
         tableName: DB_TABLES.CONSTANTS,
         timestamps: false
     });
-    return Constants
+    return Constant
 };
