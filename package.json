@@ -26,7 +26,8 @@
     "sequelize": "^5.10.0",
     "sequelize-cli": "^5.5.0",
     "socket.io": "^2.2.0",
-    "joi": "^14.3.1"
+    "joi": "^14.3.1",
+    "telegraf": "^3.32.0"
   },
   "devDependencies": {
     "@types/socket.io": "^2.1.2",

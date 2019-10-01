@@ -14,6 +14,7 @@ module.exports = {
     },
 
     chanheConstantValue: async (label, newValue) => {
+        const ConstantsModel = db.getModel("Constant");
         await ConstantsModel.update(
             {
                 value: newValue

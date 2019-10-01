@@ -1,5 +1,7 @@
-const temperature = require('./temperature.validator');
+const temperatureValidator = require('./temperature.validator');
+const movingValidator = require('./moving.validator');
 
 module.exports = {
-    temperature
+    temperatureValidator,
+    movingValidator
 };
