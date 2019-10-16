@@ -7,7 +7,6 @@ const {movingValidator} = require('../../validators');
 module.exports = async (req, res) => {
     try {
         const movingObject = req.body;
-
         const movingValidiry = Joi.validate(movingObject, movingValidator);
 
         if (movingValidiry.error) {
