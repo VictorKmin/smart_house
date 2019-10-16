@@ -18,7 +18,7 @@ module.exports = async (req, res) => {
 
         if (is_detect.value) {
             console.info('TELEGRAM MESSAGE');
-            telegramService.sendMessage() // TODO
+            await telegramService.sendMessage() // TODO
         }
 
         await movingService.create(movingObject);

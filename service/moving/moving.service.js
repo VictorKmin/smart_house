@@ -1,9 +1,8 @@
 const db = require('../../dataBase').getInstance();
 
-const MovingModel = db.getModel('Moving');
-
 module.exports = {
     create: async movingObject => {
+        const MovingModel = db.getModel('Moving');
         return MovingModel.create(movingObject)
     }
 };

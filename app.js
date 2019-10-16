@@ -11,10 +11,12 @@ const {moduleRequest, dbController, statistic, temperature} = require('./control
 const {movingRouter} = require('./routes');
 const {getCountOfDays} = require('./helpers');
 const mariaDB = require('./dataBase').getInstance();
+const {telegramService} = require('./service')
 
 app.use(express.json());
 
 mariaDB.setModels();
+telegramService.createBotSession();
 
 let s;
 
