@@ -15,7 +15,7 @@ const postgres = require('../../dataBase').getInstance();
 module.exports = async body => {
     try {
 
-        const RoomStatistics = postgres.getModel('RoomStatistics');
+        const TemperatureStat = postgres.getModel('TemperatureStat');
         const HumidityInfo = postgres.getModel('HumidityInfo');
         let {dayOfStartSearch, dayOfFinishSearch, roomId} = body;
 
@@ -27,7 +27,7 @@ module.exports = async body => {
          * @type {Array<Model>}
          */
             // SELECT * FROM temp_info WHERE fulldate >= fromDate AND fulldate < toDate  AND roomid = roomId ORDER BY id ASC;
-        let temperatureStat = await RoomStatistics.findAll({
+        let temperatureStat = await TemperatureStat.findAll({
                 order: [['id', 'ASC']],
                 where: {
                     [Op.and]: [

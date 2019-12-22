@@ -20,18 +20,18 @@ module.exports = (startingDay, finishedDay) => {
     finishDate = new Date(Date.now() - DATES.ONE_DAY * finishedDay).toLocaleDateString();
     finishTime = new Date(Date.now() - DATES.ONE_DAY * finishedDay).toLocaleTimeString();
 
-    let [fYear, fMonth, fDay] = startingDate.split('-');
-    (+fMonth < 10) ? fMonth = '0' + fMonth : fMonth;
-    (+fDay < 10) ? fDay = '0' + fDay : fDay;
-    startingDate = `${fYear}-${fMonth}-${fDay} ${startingTime}`;
-
-    let [year, month, day] = finishDate.split('-');
-    (+month < 10) ? month = '0' + month : month;
-    (+day < 10) ? day = '0' + day : day;
-    finishDate = `${year}-${month}-${day} ${finishTime}`;
+    startingDate = dateFormatter(startingDate, startingTime);
+    finishDate = dateFormatter(finishDate, finishTime);
 
     return {
         startingDate,
         finishDate
     }
 };
+
+function dateFormatter(date, time) {
+    let [year, month, day] = date.split('-');
+    (+month < 10) ? month = '0' + month : month;
+    (+day < 10) ? day = '0' + day : day;
+    return `${year}-${month}-${day} ${time}`;
+}

@@ -2,7 +2,7 @@ const  {DB_TABLES} = require('../../constants');
 
 module.exports = (sequelize, DataTypes) => {
     const RoomInfo = sequelize.define('RoomInfo', {
-        room_id: {
+        id: {
             type: DataTypes.INTEGER,
             primaryKey: true
         },

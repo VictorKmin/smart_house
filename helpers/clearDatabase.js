@@ -4,19 +4,19 @@ const chalk = require('chalk');
 
 const {DATES} = require('../constants');
 /**
- * @param postgres - data base
  * @returns {Promise<void>}
+ * @param mariaDB
  */
-module.exports = async postgres => {
+module.exports = async mariaDB => {
     try {
-        const RoomStatistics = postgres.getModel('RoomStatistics');
+        const TemperatureStat = mariaDB.getModel('TemperatureStat');
 
-        if (!RoomStatistics) {
+        if (!TemperatureStat) {
             throw new Error(`Cant connect to data base. Code: 1`);
         }
-        let olderThanOneMonth = Date.now() - DATES.ONE_MONTH;
+        const olderThanOneMonth = Date.now() - DATES.ONE_MONTH;
 
-        await RoomStatistics.destroy({
+        await TemperatureStat.destroy({
             where: {
                 time: {
                     [Op.lte]: olderThanOneMonth
@@ -26,6 +26,5 @@ module.exports = async postgres => {
         console.log(chalk.bgMagenta('-----ALL OLD RECORDS IS DELETED-----'));
     } catch (e) {
         console.log(chalk.bgRed(e.message))
-
     }
 };

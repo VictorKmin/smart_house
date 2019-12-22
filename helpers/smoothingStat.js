@@ -21,8 +21,9 @@ module.exports = (statArray, paramName) => {
 
     let arrayToSmooth = [];
     for (const elem of statArray) {
-        let {roomid, fulldate, [paramName]: parameter} = elem.dataValues;
-        let date = new Date(fulldate).getTime();
+        let {room_id, full_date, [paramName]: parameter} = elem.dataValues;
+        let date = new Date(full_date).getTime();
+
         arrayToSmooth.push({parameter, date});
 
         if (arrayToSmooth.length === smoothingCoefficient) {
@@ -39,9 +40,9 @@ module.exports = (statArray, paramName) => {
             avgDate = `${new Date(avgDate).toLocaleDateString()} ${new Date(avgDate).toLocaleTimeString()}`;
 
             smoothedArray.push({
-                roomid,
+                room_id,
                 [paramName]: avgParam.toFixed(2),
-                fulldate: avgDate
+                full_date: avgDate
             });
 
             arrayToSmooth = [];

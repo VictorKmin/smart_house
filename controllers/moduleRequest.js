@@ -11,7 +11,6 @@ module.exports = async (req, res) => {
         const {room_id} = req.body;
 
         console.log(chalk.green('Request from module'));
-        console.log(req.body);
 
         await mainController(req.body);
         const {temp} = await RoomInfo.findByPk(room_id);

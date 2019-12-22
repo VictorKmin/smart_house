@@ -8,7 +8,7 @@ const postgres = require('../../dataBase').getInstance();
  */
 module.exports = async () => {
     try {
-        const RoomStatistics = postgres.getModel('RoomStatistics');
+        const TemperatureStat = postgres.getModel('TemperatureStat');
         const HumidityInfo = postgres.getModel('HumidityInfo');
         const RoomsInfo = postgres.getModel('RoomInfo');
         // Achtung Achtung Achtung
@@ -24,7 +24,7 @@ module.exports = async () => {
         if (!allRooms.length) throw new Error('Sorry. We have not rooms in database. Code: 5');
         for (const room of allRooms) {
             const {roomid, temp, deviceip, isalive, auto_mode} = room.dataValues;
-            const temperatureInfo = await RoomStatistics.findOne({
+            const temperatureInfo = await TemperatureStat.findOne({
                 order: [['id', 'DESC']],
                 where: {
                     roomid
