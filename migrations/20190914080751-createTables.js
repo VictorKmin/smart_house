@@ -30,6 +30,9 @@ module.exports = {
                 device_ip: {
                     type: dataTypes.STRING,
                 },
+                room_title: {
+                    type: dataTypes.STRING
+                },
                 last_response: {
                     type: dataTypes.STRING
                 },

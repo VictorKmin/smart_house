@@ -1,9 +1,12 @@
-const bot = require('./createNewBot').getBot();
+const bot = require('./getBotInstance');
 const {TELEGRAM} = require('../../constants');
 
 module.exports = async () => {
-    const chatId = TELEGRAM.CHAT;
-
-    console.log(chatId);
-    await bot.sendMessage(chatId, 'MOVING DETECTED')
-}
+  await bot.sendMessage(TELEGRAM.CHAT,
+    'MOVING DETECTED',
+    {
+      reply_markup: {
+        keyboard: [['Turn Off'], ['Show cameras']]
+      }
+    })
+};

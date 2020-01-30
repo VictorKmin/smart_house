@@ -1,9 +1,9 @@
 const sendMessage = require('./sendMessage');
 const createBotSession = require('./ctreateBotSession');
-const createNewBot = require('./createNewBot');
+const getBotInstance = require('./getBotInstance');
 
 module.exports = {
     sendMessage,
     createBotSession,
-    createNewBot
-}
+    getBotInstance
+};
