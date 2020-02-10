@@ -10,13 +10,7 @@ module.exports = (() => {
         let client = new Sequalize(DB_CONST.dbName, DB_CONST.dbUser, DB_CONST.dbPass, {
             host: 'localhost',
             dialect: 'mysql',
-            operatorsAliases: false,
-            pool: {
-                max: 5,
-                min: 0,
-                acquire: 30000,
-                idle: 10000
-            }
+            operatorsAliases: false
         });
         let models = {};
 

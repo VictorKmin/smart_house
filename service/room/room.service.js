@@ -1,25 +1,29 @@
-const db = require('../../dataBase').getInstance();
-const RoomModel = db.getModel('RoomInfo');
+const mariaDB = require('../../dataBase').getInstance();
 
-class RoomService {
-    async create(roomObject){
-        return RoomModel.create(roomObject)
-    }
+module.exports = {
+    create: (roomObject) => {
+        const RoomInfo = mariaDB.getModel('RoomInfo');
 
-    async findRoomById(room_id) {
-        const room = await RoomModel.findByPk(room_id);
+        return RoomInfo.create(roomObject)
+    },
+
+    findRoomById: async (id) => {
+        const RoomInfo = mariaDB.getModel('RoomInfo');
+
+        const room = await RoomInfo.findByPk(id);
 
         return room && room.dataValues
+    },
+
+    updateRoomById: (id, patchObject) => {
+        const RoomInfo = mariaDB.getModel('RoomInfo');
+
+        return RoomInfo.update(patchObject, {where: {id}})
+    },
+
+    getAllRooms: () => {
+        const RoomInfo = mariaDB.getModel('RoomInfo');
+
+        return RoomInfo.findAll();
     }
-
-    async updateRoomById (room_id, patchObject) {
-        return RoomModel.update(patchObject, {where: {room_id}})
-    }
-
-    getAllRooms() {
-        return RoomModel.findAll();
-    }
-
-}
-
-module.exports = new RoomService();
+};

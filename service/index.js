@@ -4,7 +4,6 @@ const humidityService = require('./humidity');
 const roomService = require('./room');
 const movingService = require('./moving');
 const constantService = require('./constant');
-const telegramService = require('./telegram');
 
 module.exports = {
     temperatureService,
@@ -12,6 +11,5 @@ module.exports = {
     humidityService,
     roomService,
     constantService,
-    movingService,
-    telegramService
+    movingService
 };

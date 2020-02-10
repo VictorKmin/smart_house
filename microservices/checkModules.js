@@ -6,7 +6,7 @@ const {roomService} = require('../service');
 mariaDB.setModels();
 
 process.on('message', () => {
-    setInterval(checkModules, DATES.PING_MODULE_TIMEOUT);
+  setInterval(checkModules, DATES.PING_MODULE_TIMEOUT);
 });
 
 /**
@@ -15,31 +15,28 @@ process.on('message', () => {
  * @returns {Promise<void>}
  */
 async function checkModules() {
-    try {
-        const currentTime = Date.now();
-        const RoomInfo = mariaDB.getModel('RoomInfo');
+  try {
+    console.log(chalk.magenta('Start to check modules....'));
 
-        console.log(chalk.magenta('Start to check modules....'));
-        if (!RoomInfo) throw new Error(`Cant connect to data base. Code: 1`);
+    const currentTime = Date.now();
+    const allRooms = await roomService.getAllRooms();
 
-        const allRooms = await RoomInfo.findAll();
-
-        if (!allRooms.length) {
-            return
-        }
-
-        for (const {id, last_response} of allRooms) {
-            console.log(chalk.cyan(
-                `Last response in room ${id} was ${((currentTime - last_response) / 1000 / 60).toFixed(1)}m ago`
-            ));
-
-            if (currentTime - last_response > DATES.FIVE_MINUTES) {
-                await roomService.updateRoomById(id, {is_alive: false});
-
-                console.log(chalk.bgRed(`Module in room ${id} is dead ! Code: 2`));
-            }
-        }
-    } catch (e) {
-        console.log(chalk.bgRed(e.message))
+    if (!allRooms.length) {
+      return
     }
+
+    for (const {id, last_response} of allRooms) {
+      console.log(chalk.cyan(
+        `Last response in room ${id} was ${((currentTime - last_response) / 1000 / 60).toFixed(1)}m ago`
+      ));
+
+      if (currentTime - last_response > DATES.FIVE_MINUTES) {
+        await roomService.updateRoomById(id, {is_alive: false});
+
+        console.log(chalk.bgRed(`Module in room ${id} is dead ! Code: 2`));
+      }
+    }
+  } catch (e) {
+    console.log(chalk.bgRed(e.message))
+  }
 }

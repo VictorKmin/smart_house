@@ -1,13 +1,13 @@
 const chalk = require('chalk');
 
-const postgres = require('../dataBase').getInstance();
+const mariadb = require('../dataBase').getInstance();
 const mainController = require('./dataBase/dataBaseController');
 const {getOneRoomStat, lastRoomStat} = require('./statistic');
 
 module.exports = async (req, res) => {
     try {
         const socket = req.socket;
-        const RoomInfo = postgres.getModel('RoomInfo');
+        const RoomInfo = mariadb.getModel('RoomInfo');
         const {room_id} = req.body;
 
         console.log(chalk.green('Request from module'));

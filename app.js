@@ -1,4 +1,5 @@
 const express = require('express');
+const chalk = require("chalk");
 const app = express();
 const http = require('http').Server(app);
 const io = require('socket.io')(http);
@@ -8,56 +9,57 @@ const {resolve: resolvePath} = require('path');
 
 // const clearDatabase = require('./helpers/clearDatabase')
 const {moduleRequest, dbController, statistic, temperature} = require('./controllers');
-const {movingRouter} = require('./routes');
+const {movingRouter, botRouter} = require('./routes');
 const {getCountOfDays} = require('./helpers');
 const mariaDB = require('./dataBase').getInstance();
-const {telegramService} = require('./service');
+mariaDB.setModels();
 
 app.use(express.json());
-
-mariaDB.setModels();
 
 let s;
 
 io.on("connection", socket => {
-    s = socket;
-    socket.on('getRoom', async () => {
-        socket.emit('rooms', await statistic.lastRoomStat())
-    });
+  s = socket;
+  socket.on('getRoom', async () => {
+    socket.emit('rooms', await statistic.lastRoomStat())
+  });
 
-    socket.on('buildChart', async body => {
-        socket.emit('charts', await statistic.fullStatisticByDate(body));
-        socket.emit('timeLine', await getCountOfDays(body.roomId));
-    });
+  socket.on('buildChart', async body => {
+    socket.emit('charts', await statistic.fullStatisticByDate(body));
+    socket.emit('timeLine', await getCountOfDays(body.roomId));
+  });
 
-    socket.on('changeTemp', async body => {
-        temperature.setTemperature(body.roomId, body.temp)
-            .then(async value => {
-                await dbController.dbController(JSON.parse(value))
-            })
-            .then(() => {
-                return statistic.getOneRoomStat(body.roomId)
-            })
-            .then(value => {
-                socket.emit('lastRoomStat', value);
-            })
-            .catch(reason => {
-                console.error(reason)
-            })
-    });
+  socket.on('changeTemp', async body => {
+    temperature.setTemperature(body.roomId, body.temp)
+      .then(async value => {
+        await dbController.dbController(JSON.parse(value))
+      })
+      .then(() => {
+        return statistic.getOneRoomStat(body.roomId)
+      })
+      .then(value => {
+        socket.emit('lastRoomStat', value);
+      })
+      .catch(reason => {
+        console.error(reason)
+      })
+  });
 });
+
+app.use('/bot', botRouter);
+
 app.use((req, res, next) => {
     res.setHeader("Access-Control-Allow-Origin", "*");
     res.setHeader("Access-Control-Allow-Credentials", true);
     res.setHeader("Access-Control-Allow-Methods", "*");
     res.setHeader("Access-Control-Allow-Headers", "*");
 
-    req.socket = s;
-    next();
+  req.socket = s;
+  next();
 });
 
+app.use('/module', moduleRequest);
 app.use('/moving', movingRouter);
-app.use('/', moduleRequest);
 
 /**
  * Child-process to working with Modules
@@ -65,10 +67,10 @@ app.use('/', moduleRequest);
  * Check is our module is alive
  */
 (() => {
-    const isModuleAlive = fork(resolvePath('./microservices/checkModules'));
-    isModuleAlive.send('start');
+  const isModuleAlive = fork(resolvePath('./microservices/checkModules'));
+  isModuleAlive.send('start');
 
-    console.log('Child process started !');
+  console.log(chalk.blue('Child process started !'));
 })();
 
 /**
@@ -81,16 +83,16 @@ app.use('/', moduleRequest);
 // });
 
 http.listen(5000, err => {
-    if (err) console.log(err);
-    else {
-        console.log('Listen 5000');
-        console.log(`██╗    ██╗███████╗██╗      ██████╗ ██████╗ ███╗   ███╗███████╗    ████████╗ ██████╗     ███████╗███╗   ███╗ █████╗ ██████╗ ████████╗    ██╗  ██╗ ██████╗ ██╗   ██╗███████╗███████╗
+  if (err) console.log(err);
+  else {
+    console.log('Listen 5000');
+    console.log(`
+██╗    ██╗███████╗██╗      ██████╗ ██████╗ ███╗   ███╗███████╗    ████████╗ ██████╗     ███████╗███╗   ███╗ █████╗ ██████╗ ████████╗    ██╗  ██╗ ██████╗ ██╗   ██╗███████╗███████╗
 ██║    ██║██╔════╝██║     ██╔════╝██╔═══██╗████╗ ████║██╔════╝    ╚══██╔══╝██╔═══██╗    ██╔════╝████╗ ████║██╔══██╗██╔══██╗╚══██╔══╝    ██║  ██║██╔═══██╗██║   ██║██╔════╝██╔════╝
 ██║ █╗ ██║█████╗  ██║     ██║     ██║   ██║██╔████╔██║█████╗         ██║   ██║   ██║    ███████╗██╔████╔██║███████║██████╔╝   ██║       ███████║██║   ██║██║   ██║███████╗█████╗  
 ██║███╗██║██╔══╝  ██║     ██║     ██║   ██║██║╚██╔╝██║██╔══╝         ██║   ██║   ██║    ╚════██║██║╚██╔╝██║██╔══██║██╔══██╗   ██║       ██╔══██║██║   ██║██║   ██║╚════██║██╔══╝  
 ╚███╔███╔╝███████╗███████╗╚██████╗╚██████╔╝██║ ╚═╝ ██║███████╗       ██║   ╚██████╔╝    ███████║██║ ╚═╝ ██║██║  ██║██║  ██║   ██║       ██║  ██║╚██████╔╝╚██████╔╝███████║███████╗
- ╚══╝╚══╝ ╚══════╝╚══════╝ ╚═════╝ ╚═════╝ ╚═╝     ╚═╝╚══════╝       ╚═╝    ╚═════╝     ╚══════╝╚═╝     ╚═╝╚═╝  ╚═╝╚═╝  ╚═╝   ╚═╝       ╚═╝  ╚═╝ ╚═════╝  ╚═════╝ ╚══════╝╚══════╝`);
-
-        telegramService.createBotSession();
-    }
+ ╚══╝╚══╝ ╚══════╝╚══════╝ ╚═════╝ ╚═════╝ ╚═╝     ╚═╝╚══════╝       ╚═╝    ╚═════╝     ╚══════╝╚═╝     ╚═╝╚═╝  ╚═╝╚═╝  ╚═╝   ╚═╝       ╚═╝  ╚═╝ ╚═════╝  ╚═════╝ ╚══════╝╚══════╝
+ `);
+  }
 });
