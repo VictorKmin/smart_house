@@ -1,12 +1,10 @@
 const chalk = require('chalk');
 
 const postgres = require('../../dataBase').getInstance();
-const {co2Service, humidityService, roomService} = require('../../service');
+const {co2Service, humidityService, roomService, temperatureService} = require('../../service');
 const {currentDateBuilder} = require('../../helpers');
 
 module.exports = async body => {
-    const TemperatureStat = postgres.getModel('TemperatureStat');
-
     const {ip: device_ip, room_id: room_id, room_temp} = body;
     const {room_heater: status, sensor_temp: temp, sensor_humidity: humidity, sensor_co2: co2 = 0} = body.interface;
 
@@ -39,7 +37,7 @@ module.exports = async body => {
             auto_mode: !!room_temp
         });
 
-        await TemperatureStat.create({
+        await Rom.create({
             room_id,
             room_temp: temp.toFixed(1),
             heater_status: !!status,
@@ -67,7 +65,7 @@ module.exports = async body => {
      * If its equals we delete previous record.
      */
         // Find newest room in DataBase
-    let [previousRoom, oldRoom] = await TemperatureStat.findAll({
+    let [previousRoom, oldRoom] = await temperatureService.findAll({
             order: [['id', 'DESC']],
             limit: 2,
             where: {room_id}
@@ -87,7 +85,7 @@ module.exports = async body => {
         }
     }
     // Then we create new record
-    await TemperatureStat.create({
+    await temperatureService.create({
         room_id,
         room_temp: temp.toFixed(1),
         heater_status: !!status,
