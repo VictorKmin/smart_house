@@ -1,15 +1,13 @@
 const chalk = require('chalk');
+const dayjs = require('dayjs');
 
-const postgres = require('../../dataBase').getInstance();
 const {co2Service, humidityService, roomService, temperatureService} = require('../../service');
-const {currentDateBuilder} = require('../../helpers');
 
 module.exports = async body => {
     const {ip: device_ip, room_id: room_id, room_temp} = body;
     const {room_heater: status, sensor_temp: temp, sensor_humidity: humidity, sensor_co2: co2 = 0} = body.interface;
 
-    const date = currentDateBuilder();
-    const time = new Date().toLocaleTimeString();
+    const full_date = dayjs(new Date()).format('YYYY-MM-DD HH:mm:ss');
 
     if (!device_ip) throw new Error(chalk.bgRed(`BAD JSON FROM MODULE ${room_id}. Code: 4 IP`));
     if (!room_id) throw new Error(chalk.bgRed(`BAD JSON FROM MODULE ${room_id}. Code: 4 ROOM ID`));
@@ -37,15 +35,15 @@ module.exports = async body => {
             auto_mode: !!room_temp
         });
 
-        await Rom.create({
+        await temperatureService.create({
             room_id,
             room_temp: temp.toFixed(1),
             heater_status: !!status,
-            full_date: `${date} ${time}`
+            full_date
         });
 
-        await humidityService.create({room_id, humidity, full_date: `${date} ${time}`});
-        await co2Service.createCO2({room_id, co2, full_date: `${date} ${time}`});
+        await humidityService.create({room_id, humidity, full_date});
+        await co2Service.createCO2({room_id, co2, full_date});
 
         console.log(chalk.blue(`Room ${room_id} is created`));
     }
@@ -65,22 +63,14 @@ module.exports = async body => {
      * If its equals we delete previous record.
      */
         // Find newest room in DataBase
-    let [previousRoom, oldRoom] = await temperatureService.findAll({
-            order: [['id', 'DESC']],
-            limit: 2,
-            where: {room_id}
-        });
+    let [previousRoom, oldRoom] = await temperatureService.getRoomsLastTwoValues(room_id);
 
     if (previousRoom && oldRoom) {
-        const {room_temp: oldTemp} = oldRoom.dataValues;
-        const {id: lastId, room_temp: lastTemp} = previousRoom.dataValues;
+        const {room_temp: oldTemp} = oldRoom;
+        const {id: lastId, room_temp: lastTemp} = previousRoom;
         // If temperatures of current value and last value is equals - just update time
         if (+oldTemp === +temp.toFixed(1) && +lastTemp === +temp.toFixed(1)) {
-            await TemperatureStat.destroy({
-                where: {
-                    id: lastId
-                }
-            });
+            await temperatureService.deleteById(lastId);
             console.log(chalk.blue(`DELETE PREVIOUS TEMPERATURE `));
         }
     }
@@ -89,22 +79,17 @@ module.exports = async body => {
         room_id,
         room_temp: temp.toFixed(1),
         heater_status: !!status,
-        full_date: `${date} ${time}`
+        full_date
     });
 
-    [previousRoom, oldRoom] = await humidityService.getAllInfoByParams(
-        {room_id},
-        'id',
-        'DESC',
-        2
-    );
+    [previousRoom, oldRoom] = await humidityService.getRoomsLastTwoValues(room_id);
 
     if (previousRoom && oldRoom) {
-        const {humidity: oldHumidity} = oldRoom.dataValues;
-        const {id: lastId, humidity: lastHumidity} = previousRoom.dataValues;
+        const {humidity: oldHumidity} = oldRoom;
+        const {id: lastId, humidity: lastHumidity} = previousRoom;
         // If humidity of current value and last value is equals - just update time
         if (+oldHumidity === +humidity.toFixed(1) && +lastHumidity === +humidity.toFixed(1)) {
-            await humidityService.destroyByParams({id: lastId});
+            await humidityService.destroyById(lastId);
             console.log(chalk.blue(`DELETE PREVIOUS HUMIDITY`));
         }
     }
@@ -112,18 +97,18 @@ module.exports = async body => {
     await humidityService.create({
         room_id,
         humidity: humidity.toFixed(1),
-        full_date: `${date} ${time}`
+        full_date
     });
 
-    [previousRoom, oldRoom] = await co2Service.getAllInfoByParams({room_id}, 'id', 'DESC', 2);
+    [previousRoom, oldRoom] = await co2Service.getRoomsLastTwoValues(room_id);
 
     if (previousRoom && oldRoom) {
-        const {co2: oldCO2} = oldRoom.dataValues;
-        const {id: lastId, co2: lastCO2} = previousRoom.dataValues;
+        const {co2: oldCO2} = oldRoom;
+        const {id: lastId, co2: lastCO2} = previousRoom;
         // If co2 of current value and last value is equals - destroy average record
         if (+oldCO2 === +co2.toFixed(1) && +lastCO2 === +co2.toFixed(1)) {
 
-            await co2Service.destroyCO2({id: lastId});
+            await co2Service.destroyCO2ByID(lastId);
 
             console.log(chalk.blue(`DELETE PREVIOUS CO2`));
         }
@@ -132,7 +117,7 @@ module.exports = async body => {
     await co2Service.createCO2({
         room_id,
         co2: co2.toFixed(1),
-        full_date: `${date} ${time}`
+        full_date
     });
 
     console.log(chalk.blue(`Info by room ${room_id} insert into statistic`));

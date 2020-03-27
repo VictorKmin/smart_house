@@ -7,12 +7,10 @@ module.exports = {
         return RoomInfo.create(roomObject)
     },
 
-    findRoomById: async (id) => {
+    findRoomById: id => {
         const RoomInfo = mariaDB.getModel('RoomInfo');
 
-        const room = await RoomInfo.findByPk(id);
-
-        return room && room.dataValues
+        return  RoomInfo.findByPk(id, {raw: true});
     },
 
     updateRoomById: (id, patchObject) => {

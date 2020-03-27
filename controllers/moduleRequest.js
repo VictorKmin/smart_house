@@ -15,11 +15,15 @@ module.exports = async (req, res) => {
         await mainController(req.body);
         const {temp} = await RoomInfo.findByPk(room_id);
 
-        const oneRoomStat = await getOneRoomStat(room_id);
 
-        await socket.emit('updateChart', oneRoomStat);
+        if (socket) {
+            const oneRoomStat = await getOneRoomStat(room_id);
 
-        socket.emit('rooms', await lastRoomStat());
+            await socket.emit('updateChart', oneRoomStat);
+
+            socket.emit('rooms', await lastRoomStat());
+        }
+
 
         res.json({
             success: true,

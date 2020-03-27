@@ -1,38 +1,59 @@
 const db = require('../../dataBase').getInstance();
-const CO2 = db.getModel('CO2Info');
 
 module.exports = {
 
-    getCO2ByParams: async (paramObject = {}, sort = 'id', order) => {
+    getCO2ByParams: (paramObject = {}, sort = 'id', order) => {
+        const CO2 = db.getModel('CO2Info');
+
         order = order === 'DESC' ? 'DESC' : 'ASC';
 
-        const co2 =  await CO2.findOne({
+        return CO2.findOne({
             where: paramObject,
-            order: [sort, order]
+            order: [[sort, order]],
+            raw: true
         });
-
-        return co2 && co2.dataValues
     },
 
-    getAllInfoByParams: async (paramObject = {}, sort = 'id', order, limit = '', offset = '') => {
+    getAllInfoByParams: (paramObject = {}, sort = 'id', order, limit = 0, offset = 0) => {
+        const CO2 = db.getModel('CO2Info');
+
         order = order === 'DESC' ? 'DESC' : 'ASC';
 
-        const co2 =  await CO2.findAll({
+        return CO2.findAll({
             where: paramObject,
-            order: [sort, order],
+            order: [[sort, order]],
             limit,
-            offset
+            offset,
+            raw: true
         });
-
-        return co2 && co2.dataValues
     },
 
-    createCO2: async co2Object => {
+
+    getRoomsLastTwoValues(room_id) {
+        const CO2 = db.getModel('CO2Info');
+
+        return CO2.findAll({
+            order: [['id', 'DESC']],
+            limit: 2,
+            where: {room_id}
+        })
+    },
+
+    createCO2: co2Object => {
+        const CO2 = db.getModel('CO2Info');
+
         return CO2.create(co2Object)
     },
 
-    destroyCO2: async destroyObject => {
-        return CO2.destroy({where: destroyObject})
-    }
+    destroyCO2: destroyObject => {
+        const CO2 = db.getModel('CO2Info');
 
+        return CO2.destroy({where: destroyObject})
+    },
+
+    destroyCO2ByID: id => {
+        const CO2 = db.getModel('CO2Info');
+
+        return CO2.destroy({where: {id}})
+    }
 };

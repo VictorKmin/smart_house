@@ -1,10 +1,13 @@
 const express = require('express');
 const chalk = require("chalk");
+const dotenv = require("dotenv");
+const {fork} = require('child_process');
+const {resolve: resolvePath} = require('path');
+
+dotenv.config();
 const app = express();
 const http = require('http').Server(app);
 const io = require('socket.io')(http);
-const {fork} = require('child_process');
-const {resolve: resolvePath} = require('path');
 // const cron = require('node-cron');
 
 // const clearDatabase = require('./helpers/clearDatabase')
